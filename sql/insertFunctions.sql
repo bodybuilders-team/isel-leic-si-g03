@@ -53,7 +53,6 @@ BEGIN
     );
 END;
 $$;
--- SELECT get_alarms_count(2022);
 
 
 -- 2f)
@@ -95,7 +94,7 @@ CREATE OR REPLACE FUNCTION valid_green_zone(
 AS
 $$
 BEGIN
-    RETURN (ST_DISTANCE(green_zone_center, gps_location) <= green_zone_radius); -- TODO isto tá sus Pascoas
+    RETURN (ST_DISTANCE(green_zone_center, gps_location) <= green_zone_radius); -- TODO isto tá sus Pascoa
 END;
 $$;
 

@@ -5,11 +5,11 @@ DROP PROCEDURE IF EXISTS remove_private_client CASCADE;
 DROP PROCEDURE IF EXISTS update_private_client CASCADE;
 
 CREATE OR REPLACE PROCEDURE insert_private_client(
-    client_citizen_card_number TEXT,
-    client_name TEXT,
-    client_phone_number TEXT,
-    client_nif TEXT,
-    client_address TEXT,
+    client_citizen_card_number VARCHAR(15),
+    client_name VARCHAR(60),
+    client_phone_number VARCHAR(20),
+    client_nif CHAR(9),
+    client_address VARCHAR(200),
     client_referee INTEGER DEFAULT NULL
 )
     LANGUAGE plpgsql
@@ -27,7 +27,6 @@ BEGIN
 END;
 $$;
 
--- CALL insert_private_client('123343', 'andre', '12', '123', 'rua das ruas', 1);
 
 CREATE OR REPLACE PROCEDURE remove_private_client(client_id INTEGER)
     LANGUAGE plpgsql
@@ -44,14 +43,13 @@ BEGIN
 END;
 $$;
 
--- CALL remove_private_client(3)
 
 CREATE OR REPLACE PROCEDURE update_private_client(
     client_id INTEGER,
-    new_citizen_card_number TEXT,
-    new_nif TEXT,
-    new_name TEXT,
-    new_address TEXT,
+    new_citizen_card_number VARCHAR(15),
+    new_nif CHAR(9),
+    new_name VARCHAR(60),
+    new_address VARCHAR(200),
     new_client_referee INTEGER DEFAULT NULL
 )
     LANGUAGE plpgsql
@@ -70,5 +68,3 @@ BEGIN
     WHERE id = client_id;
 END;
 $$;
-
--- CALL update_private_client(4,'4', '69', 'big jesus', 'nova rua', 2);
