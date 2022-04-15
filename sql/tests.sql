@@ -1,5 +1,5 @@
 -- This script contains the tests of the functionalities of items 2d) to 2m) (item 2n)
--- TODO - Run clearData.sql and insertData.sql before/after each test
+-- TODO - Run clear_data.sql and insert_data.sql before/after each test
 
 -- 2d)
 DO

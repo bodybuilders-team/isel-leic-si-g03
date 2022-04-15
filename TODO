@@ -1,10 +1,5 @@
 TODO:
-- Add integrity restrictions to conceptual model
-- Add more data in insertData.sql
-- Add comments
-- Mudar losango do GPSDevice para ter duas linhas por ser fraca
-- Ver uma melhor organização em files das funções e tal (dividir por files insertTriggers.sql, insertViews.sql, etc?)
+- Add more data in insert_data.sql
+- Add comments inside procedures and functions to explain better
 - Add tests
 - recompile latex pq o pascoa n sabe escrever bem
-
-QUESTIONS TO PASCOA:

@@ -4,6 +4,17 @@ DROP PROCEDURE IF EXISTS insert_private_client CASCADE;
 DROP PROCEDURE IF EXISTS remove_private_client CASCADE;
 DROP PROCEDURE IF EXISTS update_private_client CASCADE;
 
+/*
+    Procedure:      insert_private_client
+    Description:    Inserts a private client, given his information.
+    Parameter(s):   @client_citizen_card_number
+                    @client_name
+                    @client_phone_number
+                    @client_nif
+                    @client_address
+                    @client_referee
+    Return:         -
+*/
 CREATE OR REPLACE PROCEDURE insert_private_client(
     client_citizen_card_number VARCHAR(15),
     client_name VARCHAR(60),
@@ -28,6 +39,12 @@ END;
 $$;
 
 
+/*
+    Procedure:      remove_private_client
+    Description:    Removes a private client, given his id.
+    Parameter(s):   @client_id
+    Return:         -
+*/
 CREATE OR REPLACE PROCEDURE remove_private_client(client_id INTEGER)
     LANGUAGE plpgsql
 AS
@@ -44,6 +61,17 @@ END;
 $$;
 
 
+/*
+    Procedure:      update_private_client
+    Description:    Updates a private client, given his id and new information.
+    Parameter(s):   @client_id
+                    @client_citizen_card_number
+                    @new_nif
+                    @new_name
+                    @new_address
+                    @new_client_referee
+    Return:         -
+*/
 CREATE OR REPLACE PROCEDURE update_private_client(
     client_id INTEGER,
     new_citizen_card_number VARCHAR(15),

@@ -76,8 +76,8 @@ CREATE TABLE green_zones
 CREATE TABLE drivers
 (
     vehicle_id   INT PRIMARY KEY REFERENCES vehicles (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name         VARCHAR(60) NOT NULL,
-    phone_number VARCHAR(20) NOT NULL
+    name         VARCHAR(60),
+    phone_number VARCHAR(20)
 );
 
 CREATE TABLE alarms
