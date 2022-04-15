@@ -1,0 +1,10 @@
+TODO:
+- Add integrity restrictions to conceptual model
+- Add more data in insertData.sql
+- Add comments
+- Mudar losango do GPSDevice para ter duas linhas por ser fraca
+- Ver uma melhor organização em files das funções e tal (dividir por files insertTriggers.sql, insertViews.sql, etc?)
+- Add tests
+
+QUESTIONS TO PASCOA:
+- Pq n usar VARCHAR() e tal nos parametros de functions e procedures? Why TEXT?
