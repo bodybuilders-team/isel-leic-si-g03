@@ -4,6 +4,8 @@ DROP PROCEDURE IF EXISTS insert_private_client CASCADE;
 DROP PROCEDURE IF EXISTS remove_private_client CASCADE;
 DROP PROCEDURE IF EXISTS update_private_client CASCADE;
 
+-- 2d)
+
 /*
     Procedure:      insert_private_client
     Description:    Inserts a private client, given his information.

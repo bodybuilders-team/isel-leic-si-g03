@@ -55,4 +55,4 @@ VALUES (1, '2022-04-12 04:05:06 UTC+3', point(18, 10));
 
 
 INSERT INTO alarms
-VALUES (1);
+VALUES (1, 'Sonic');

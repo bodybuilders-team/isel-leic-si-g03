@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS clear_invalid_gps_data CASCADE;
 -- 2k)
 /*
     Procedure:      clear_invalid_gps_data
-    Description:    Called daily and which erases existing invalid gps data lasting longer than 15 days.
+    Description:    Called daily. Erases existing invalid gps data lasting longer than 15 days.
     Parameter(s):   -
     Return:         -
 */

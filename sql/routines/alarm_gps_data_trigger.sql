@@ -1,17 +1,17 @@
-DROP FUNCTION IF EXISTS valid_green_zone CASCADE;
+DROP FUNCTION IF EXISTS location_inside_green_zone CASCADE;
 DROP FUNCTION IF EXISTS alarm_gps_data_trigger CASCADE;
 DROP TRIGGER IF EXISTS alarm_gps_data ON gps_data CASCADE;
 
 -- 2g)
 /*
-    Function:       valid_green_zone
+    Function:       location_inside_green_zone
     Description:    Checks if a gps location is inside the green zone.
     Parameter(s):   @green_zone_center
                     @green_zone_radius
                     @gps_location
     Return:         true if the gps location is inside the green zone; false otherwise
 */
-CREATE OR REPLACE FUNCTION valid_green_zone(
+CREATE OR REPLACE FUNCTION location_inside_green_zone(
     green_zone_center POINT,
     green_zone_radius DOUBLE PRECISION,
     gps_location POINT
@@ -29,7 +29,7 @@ $$;
 /*
     Function:       alarm_gps_data_trigger
     Description:    Allows you to analyze the processed gps data when it is created and to
-                    generates the corresponding alarm if it is outside any of its green zones.
+                    generate the corresponding alarm if it is outside any of its green zones.
     Parameter(s):   -
     Return:         trigger
 */
@@ -39,11 +39,12 @@ CREATE OR REPLACE FUNCTION alarm_gps_data_trigger()
 AS
 $alarm_gps_data_trigger$
 DECLARE
-    green_zone       RECORD;
-    device_status_id INTEGER;
-    device_status    VARCHAR;
+    green_zone        RECORD;
+    device_status_id  INTEGER;
+    device_status_var VARCHAR;
+    drivers_name      VARCHAR;
 BEGIN
-    FOR green_zone IN SELECT green_zones
+    FOR green_zone IN SELECT *
                       FROM green_zones
                                JOIN(
                           SELECT id
@@ -59,13 +60,18 @@ BEGIN
             SELECT status
             FROM gps_device_states
             WHERE id = device_status_id
-            INTO device_status;
+            INTO device_status_var;
 
-            IF NOT valid_green_zone(green_zone.center, green_zone.radius, NEW.location) AND
-               device_status != 'AlarmPause'
+            SELECT name
+            FROM vehicles
+                     JOIN drivers ON vehicles.id = drivers.vehicle_id
+            INTO drivers_name;
+
+            IF NOT location_inside_green_zone(green_zone.center_location, green_zone.radius, NEW.location) AND
+               device_status_var != 'AlarmPause'
             THEN
-                INSERT INTO alarms(gps_data_id)
-                VALUES (NEW.id);
+                INSERT INTO alarms(gps_data_id, driver_name)
+                VALUES (NEW.id, drivers_name);
                 RETURN NEW;
             END IF;
         END LOOP;

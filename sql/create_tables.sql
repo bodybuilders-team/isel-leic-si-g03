@@ -1,17 +1,6 @@
 -- Script to create tables (item 2a)
 
-DROP TABLE IF EXISTS invalid_gps_data CASCADE;
-DROP TABLE IF EXISTS unprocessed_gps_data CASCADE;
-DROP TABLE IF EXISTS alarms CASCADE;
-DROP TABLE IF EXISTS gps_data CASCADE;
-DROP TABLE IF EXISTS green_zones CASCADE;
-DROP TABLE IF EXISTS drivers CASCADE;
-DROP TABLE if exists vehicles CASCADE;
-DROP TABLE IF EXISTS institutional_clients CASCADE;
-DROP TABLE IF EXISTS private_clients CASCADE;
-DROP TABLE IF EXISTS clients CASCADE;
-DROP TABLE IF EXISTS gps_devices CASCADE;
-DROP TABLE IF EXISTS gps_device_states CASCADE;
+CALL delete_tables();
 
 CREATE TABLE clients
 (
@@ -76,13 +65,14 @@ CREATE TABLE green_zones
 CREATE TABLE drivers
 (
     vehicle_id   INT PRIMARY KEY REFERENCES vehicles (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name         VARCHAR(60),
-    phone_number VARCHAR(20)
+    name         VARCHAR(60) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE alarms
 (
-    gps_data_id INT PRIMARY KEY REFERENCES gps_data (id) ON DELETE CASCADE ON UPDATE CASCADE
+    gps_data_id INT PRIMARY KEY REFERENCES gps_data (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    driver_name VARCHAR(60)
 );
 
 CREATE TABLE unprocessed_gps_data

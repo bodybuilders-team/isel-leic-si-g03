@@ -16,16 +16,12 @@ AS
 $delete_client_trigger$
 BEGIN
 
-    -- Insert deleted user
-    INSERT INTO clients
-    VALUES (OLD.*);
-
     -- Update active state to false
     UPDATE clients
     SET active = false
-    WHERE id = OLD.id;
+    WHERE id = NEW.id;
 
-    RETURN NEW;
+    RETURN NULL;
 END;
 $delete_client_trigger$;
 
@@ -35,7 +31,7 @@ $delete_client_trigger$;
                     deactivating the client without erasing their data.
 */
 CREATE TRIGGER delete_client
-    AFTER DELETE
+    BEFORE DELETE
     ON clients
     FOR EACH ROW
 EXECUTE FUNCTION delete_client_trigger();

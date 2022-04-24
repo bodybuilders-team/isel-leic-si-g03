@@ -15,28 +15,23 @@ CREATE OR REPLACE FUNCTION insert_into_list_alarms_trigger()
 AS
 $insert_into_list_alarms_trigger$
 DECLARE
-    new_device_id  INTEGER;
-    new_vehicle_id INTEGER;
+    vehicle RECORD;
 BEGIN
-    -- Insert new device
-    INSERT INTO gps_devices(device_status)
-    VALUES (1)
-    INTO new_device_id;
+
+    -- Get vehicle and if there's a driver, the driver's name --
+    SELECT *, name as driver_name
+    FROM vehicles
+             LEFT JOIN drivers ON vehicles.id = drivers.vehicle_id
+    WHERE vehicles.license_plate = NEW.license_plate
+    INTO vehicle;
 
     -- Insert new gps data
     INSERT INTO gps_data(id, device_id, timestamp, location)
-    VALUES (NEW.gps_data_id, new_device_id, NEW.timestamp, NEW.location);
+    VALUES (NEW.gps_data_id, vehicle.gps_device_id, NEW.timestamp, NEW.location);
 
     -- Insert new alarm
-    INSERT INTO alarms(gps_data_id)
-    VALUES (NEW.gps_data_id);
-
-    INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms)
-    VALUES (new_device_id, 1, NEW.license_plate, 1) -- TODO - what about client_id???
-    INTO new_vehicle_id;
-
-    INSERT INTO drivers(vehicle_id, name)
-    VALUES (new_vehicle_id, NEW.driver_name);
+    INSERT INTO alarms(gps_data_id, driver_name)
+    VALUES (NEW.gps_data_id, vehicle.driver_name);
 
     RETURN NEW;
 END;

@@ -4,6 +4,8 @@ DROP FUNCTION IF EXISTS get_alarms_count CASCADE;
 /*
     Function:       get_alarms_count
     Description:    Returns the total number of alarms for a given year and vehicle.
+                    If the license plate is empty, returns the total number of alarms
+                    for all vehicles of the given year.
     Parameter(s):   @year_a
                     @license_plate_a
     Return:         total number of alarms
@@ -27,9 +29,9 @@ BEGIN
                     SELECT gps_device_id AS id
                     FROM vehicles
                     WHERE vehicles.license_plate = license_plate_a
-                ) AS gps_device ON gps_data.device_id = gps_device.id
+                ) AS gps_device_ids ON gps_data.device_id = gps_device_ids.id
                 WHERE extract(YEAR from gps_data.timestamp) = year_a
-            ) AS gps_data_j ON alarms.gps_data_id = gps_data_j.id
+            ) AS gps_data_ids ON alarms.gps_data_id = gps_data_ids.id
         );
     END IF;
 
@@ -40,7 +42,7 @@ BEGIN
             SELECT gps_data.id
             FROM gps_data
             WHERE extract(YEAR from gps_data.timestamp) = year_a
-        ) AS gps_data_j ON alarms.gps_data_id = gps_data_j.id
+        ) AS gps_data_ids ON alarms.gps_data_id = gps_data_ids.id
     );
 END;
 $$;
