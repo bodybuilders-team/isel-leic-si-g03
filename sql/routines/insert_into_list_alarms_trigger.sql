@@ -29,9 +29,12 @@ BEGIN
     INSERT INTO gps_data(id, device_id, timestamp, location)
     VALUES (NEW.gps_data_id, vehicle.gps_device_id, NEW.timestamp, NEW.location);
 
+    -- TODO - Alarm is being generated automatically because of alarm_gps_data_trigger. This is not a problem,
+    --  however, it's not guaranteed that the alarm will be triggered since the location might be good.
+
     -- Insert new alarm
-    INSERT INTO alarms(gps_data_id, driver_name)
-    VALUES (NEW.gps_data_id, vehicle.driver_name);
+    -- INSERT INTO alarms(gps_data_id, driver_name)
+    -- VALUES (NEW.gps_data_id, vehicle.driver_name);
 
     RETURN NEW;
 END;

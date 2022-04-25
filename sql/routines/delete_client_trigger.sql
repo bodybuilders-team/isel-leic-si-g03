@@ -19,7 +19,7 @@ BEGIN
     -- Update active state to false
     UPDATE clients
     SET active = false
-    WHERE id = NEW.id;
+    WHERE id = OLD.id;
 
     RETURN NULL;
 END;

@@ -1,14 +1,14 @@
-DROP FUNCTION IF EXISTS create_alarm_trigger CASCADE;
+DROP FUNCTION IF EXISTS increment_vehicle_count_trigger CASCADE;
 DROP TRIGGER IF EXISTS create_alarm ON alarms CASCADE;
 
 -- 2m)
 /*
-    Function:       create_alarm_trigger
+    Function:       increment_vehicle_count_trigger
     Description:    When an alarm is created, the number of vehicle alarms is updated.
     Parameter(s):   -
     Return:         trigger
 */
-CREATE OR REPLACE FUNCTION create_alarm_trigger()
+CREATE OR REPLACE FUNCTION increment_vehicle_count_trigger()
     RETURNS TRIGGER
     LANGUAGE plpgsql
 AS
@@ -34,11 +34,11 @@ END;
 $create_alarm_trigger$;
 
 /*
-    Trigger:        create_alarm
+    Trigger:        increment_vehicle_count
     Description:    When an alarm is created, the number of vehicle alarms is updated.
 */
-CREATE TRIGGER create_alarm
+CREATE TRIGGER increment_vehicle_count
     AFTER INSERT
     ON alarms
     FOR EACH ROW
-EXECUTE FUNCTION create_alarm_trigger();
+EXECUTE FUNCTION increment_vehicle_count_trigger();

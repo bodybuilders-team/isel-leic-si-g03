@@ -14,6 +14,6 @@ $$
 BEGIN
     DELETE
     FROM invalid_gps_data
-    WHERE extract(DAY from invalid_gps_data.timestamp) > 15;
+    WHERE extract(DAY from (current_date - invalid_gps_data.timestamp)) > 15;
 END;
 $$;

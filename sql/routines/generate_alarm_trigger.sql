@@ -1,6 +1,6 @@
 DROP FUNCTION IF EXISTS location_inside_green_zone CASCADE;
-DROP FUNCTION IF EXISTS alarm_gps_data_trigger CASCADE;
-DROP TRIGGER IF EXISTS alarm_gps_data ON gps_data CASCADE;
+DROP FUNCTION IF EXISTS generate_alarm_trigger CASCADE;
+DROP TRIGGER IF EXISTS generate_alarm ON gps_data CASCADE;
 
 -- 2g)
 /*
@@ -25,24 +25,23 @@ BEGIN
 END;
 $$;
 
--- TODO arranjar melhor nome
 /*
-    Function:       alarm_gps_data_trigger
-    Description:    Allows you to analyze the processed gps data when it is created and to
-                    generate the corresponding alarm if it is outside any of its green zones.
+    Function:       generate_alarm_trigger
+    Description:    Allows you to analyze the processed gps data when it is created,
+                    generating the corresponding alarm if it is outside any of its green zones.
     Parameter(s):   -
     Return:         trigger
 */
-CREATE OR REPLACE FUNCTION alarm_gps_data_trigger()
+CREATE OR REPLACE FUNCTION generate_alarm_trigger()
     RETURNS TRIGGER
     LANGUAGE plpgsql
 AS
 $alarm_gps_data_trigger$
 DECLARE
-    green_zone        RECORD;
-    device_status_id  INTEGER;
-    device_status_var VARCHAR;
-    drivers_name      VARCHAR;
+    green_zone       RECORD;
+    device_status_id INTEGER;
+    v_device_status  VARCHAR(20);
+    v_driver_name    VARCHAR(60);
 BEGIN
     FOR green_zone IN SELECT *
                       FROM green_zones
@@ -60,18 +59,18 @@ BEGIN
             SELECT status
             FROM gps_device_states
             WHERE id = device_status_id
-            INTO device_status_var;
+            INTO v_device_status;
 
             SELECT name
             FROM vehicles
                      JOIN drivers ON vehicles.id = drivers.vehicle_id
-            INTO drivers_name;
+            INTO v_driver_name;
 
             IF NOT location_inside_green_zone(green_zone.center_location, green_zone.radius, NEW.location) AND
-               device_status_var != 'AlarmPause'
+               v_device_status != 'AlarmPause'
             THEN
                 INSERT INTO alarms(gps_data_id, driver_name)
-                VALUES (NEW.id, drivers_name);
+                VALUES (NEW.id, v_driver_name);
                 RETURN NEW;
             END IF;
         END LOOP;
@@ -80,12 +79,12 @@ END;
 $alarm_gps_data_trigger$;
 
 /*
-    Trigger:        alarm_gps_data
-    Description:    Allows you to analyze the processed gps data when it is created and to
-                    generates the corresponding alarm if it is outside any of its green zones.
+    Trigger:        generate_alarm
+    Description:    Allows you to analyze the processed gps data when it is created,
+                    generating the corresponding alarm if it is outside any of its green zones.
 */
-CREATE TRIGGER alarm_gps_data
+CREATE TRIGGER generate_alarm
     AFTER INSERT
     ON gps_data
     FOR EACH ROW
-EXECUTE FUNCTION alarm_gps_data_trigger();
+EXECUTE FUNCTION generate_alarm_trigger();

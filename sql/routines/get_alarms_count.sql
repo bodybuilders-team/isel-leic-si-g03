@@ -12,7 +12,7 @@ DROP FUNCTION IF EXISTS get_alarms_count CASCADE;
 */
 CREATE OR REPLACE FUNCTION get_alarms_count(
     year_a INTEGER,
-    license_plate_a TEXT DEFAULT NULL
+    license_plate_a VARCHAR(10) DEFAULT NULL
 )
     RETURNS INTEGER
     LANGUAGE plpgsql AS

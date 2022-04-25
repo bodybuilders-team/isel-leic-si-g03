@@ -1,5 +1,10 @@
 -- Script to insert initial data into tables (item 2c)
 
+CREATE OR REPLACE PROCEDURE insert_data()
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
 INSERT INTO clients(name, phone_number, nif, address, active)
 VALUES ('André Páscoa', '962249051', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal', true),
        ('BE Fit', '1234', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal', true);
@@ -53,6 +58,7 @@ VALUES (1, '2022-04-12 04:05:06 UTC+1', point(18, 9)),
 INSERT INTO gps_data (device_id, timestamp, location)
 VALUES (1, '2022-04-12 04:05:06 UTC+3', point(18, 10));
 
+END;
+$$;
 
-INSERT INTO alarms
-VALUES (1, 'Sonic');
+CALL insert_data();

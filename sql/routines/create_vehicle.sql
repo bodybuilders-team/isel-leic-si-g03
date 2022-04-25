@@ -18,7 +18,7 @@ DROP PROCEDURE IF EXISTS create_vehicle CASCADE;
 CREATE OR REPLACE PROCEDURE create_vehicle(
     v_gps_device_id INTEGER,
     v_client_id INTEGER,
-    v_license_plate TEXT,
+    v_license_plate VARCHAR(10),
     v_num_alarms INTEGER,
     gz_center_location POINT DEFAULT NULL,
     gz_radius DOUBLE PRECISION DEFAULT NULL
