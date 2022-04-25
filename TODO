@@ -1,5 +1,2 @@
 TODO:
-- Add more data in insert_data.sql
-- Add comments inside procedures and functions to explain better
-- Add tests
-- recompile latex pq o pascoa n sabe escrever bem
+- Ver se uma green zone n pode ser um circle em vez de um point e um radius

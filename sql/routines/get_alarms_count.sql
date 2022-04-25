@@ -19,30 +19,23 @@ CREATE OR REPLACE FUNCTION get_alarms_count(
 $$
 BEGIN
     IF (license_plate_a IS NOT NULL) THEN
-        RETURN (
-            SELECT COUNT(*)
-            FROM alarms
-                     JOIN(
-                SELECT gps_data.id
-                FROM gps_data
-                         JOIN (
-                    SELECT gps_device_id AS id
-                    FROM vehicles
-                    WHERE vehicles.license_plate = license_plate_a
-                ) AS gps_device_ids ON gps_data.device_id = gps_device_ids.id
-                WHERE extract(YEAR from gps_data.timestamp) = year_a
-            ) AS gps_data_ids ON alarms.gps_data_id = gps_data_ids.id
-        );
+        RETURN (SELECT COUNT(*)
+                FROM alarms
+                         JOIN(SELECT gps_data.id
+                              FROM gps_data
+                                       JOIN (SELECT gps_device_id AS id
+                                             FROM vehicles
+                                             WHERE vehicles.license_plate = license_plate_a) AS gps_device_ids
+                                            ON gps_data.device_id = gps_device_ids.id
+                              WHERE extract(YEAR from gps_data.timestamp) = year_a) AS gps_data_ids
+                             ON alarms.gps_data_id = gps_data_ids.id);
     END IF;
 
-    RETURN (
-        SELECT COUNT(*)
-        FROM alarms
-                 JOIN(
-            SELECT gps_data.id
-            FROM gps_data
-            WHERE extract(YEAR from gps_data.timestamp) = year_a
-        ) AS gps_data_ids ON alarms.gps_data_id = gps_data_ids.id
-    );
+    RETURN (SELECT COUNT(*)
+            FROM alarms
+                     JOIN(SELECT gps_data.id
+                          FROM gps_data
+                          WHERE extract(YEAR from gps_data.timestamp) = year_a) AS gps_data_ids
+                         ON alarms.gps_data_id = gps_data_ids.id);
 END;
 $$;

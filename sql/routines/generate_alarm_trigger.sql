@@ -45,11 +45,10 @@ DECLARE
 BEGIN
     FOR green_zone IN SELECT *
                       FROM green_zones
-                               JOIN(
-                          SELECT id
-                          FROM vehicles
-                          WHERE gps_device_id = NEW.device_id
-                      ) AS vehicles ON vehicles.id = green_zones.vehicle_id
+                               JOIN(SELECT id
+                                    FROM vehicles
+                                    WHERE gps_device_id = NEW.device_id) AS vehicles
+                                   ON vehicles.id = green_zones.vehicle_id
         LOOP
             SELECT device_status
             FROM gps_devices

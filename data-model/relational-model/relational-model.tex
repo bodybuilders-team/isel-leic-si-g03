@@ -35,8 +35,8 @@
     GPSData(\underline{id}, device\_id, timestamp, location)\\
     FK: \{ device\_id \} de GPSDevice.id
 
-    Alarm(\underline{gps\_data\_id})\\
-    FK: \{ gps\_data\_id \} de GPSData.id\\
+    Alarm(\underline{gps\_data\_id}, driver\_name)\\
+    FK: \{ gps\_data\_id \} de GPSData.id
 
     UnprocessedGPSData(\underline{id}, timestamp, location, device\_id)
 
