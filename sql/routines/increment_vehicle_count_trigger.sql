@@ -16,7 +16,6 @@ $create_alarm_trigger$
 DECLARE
     vehicle_id INTEGER;
 BEGIN
-
     -- Get alarm vehicle id
     SELECT vehicles.id
     FROM gps_data

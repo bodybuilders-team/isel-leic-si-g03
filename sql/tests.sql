@@ -13,6 +13,8 @@ $$;
 
 -- 2d)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -32,7 +34,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -52,7 +57,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -72,8 +80,11 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2e)
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 DO
 $$
     DECLARE
@@ -93,7 +104,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 DO
 $$
     DECLARE
@@ -113,7 +127,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 DO
 $$
     DECLARE
@@ -133,7 +150,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 DO
 $$
     DECLARE
@@ -153,9 +173,12 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2f)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -182,7 +205,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -209,9 +235,11 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2g)
 
+BEGIN;
 DO
 $$
     BEGIN
@@ -226,7 +254,9 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
 DO
 $$
     BEGIN
@@ -241,7 +271,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -267,7 +300,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -293,9 +329,12 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2h)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 DO
 $$
     DECLARE
@@ -321,7 +360,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 DO
 $$
     DECLARE
@@ -348,7 +390,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 DO
 $$
     DECLARE
@@ -376,7 +421,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 DO
 $$
     DECLARE
@@ -404,9 +452,12 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2i)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -428,9 +479,12 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2j)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -455,9 +509,12 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 -- 2k)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -485,7 +542,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -513,10 +573,13 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 
 -- 2l)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -536,7 +599,10 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 DO
 $$
     DECLARE
@@ -568,10 +634,13 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;
 
 
 -- 2m)
 
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
@@ -603,3 +672,4 @@ $$
         CALL clear_and_insert_data();
     END;
 $$;
+COMMIT;

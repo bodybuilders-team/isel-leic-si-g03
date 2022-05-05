@@ -65,14 +65,15 @@ BEGIN
                      JOIN drivers ON vehicles.id = drivers.vehicle_id
             INTO v_driver_name;
 
-            IF NOT location_inside_green_zone(green_zone.center_location, green_zone.radius, NEW.location) AND
+            IF location_inside_green_zone(green_zone.center_location, green_zone.radius, NEW.location) AND
                v_device_status != 'AlarmPause'
             THEN
-                INSERT INTO alarms(gps_data_id, driver_name)
-                VALUES (NEW.id, v_driver_name);
                 RETURN NEW;
             END IF;
         END LOOP;
+
+    INSERT INTO alarms(gps_data_id, driver_name)
+    VALUES (NEW.id, v_driver_name);
     RETURN NEW;
 END;
 $alarm_gps_data_trigger$;
