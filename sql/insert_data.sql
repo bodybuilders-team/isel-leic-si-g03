@@ -5,9 +5,11 @@ CREATE OR REPLACE PROCEDURE insert_data()
 AS
 $$
 BEGIN
-    INSERT INTO clients(name, phone_number, nif, address, active)
-    VALUES ('André Páscoa', '962249051', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal', true),
-           ('BE Fit', '1234', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal', true);
+    INSERT INTO clients(name, dtype, phone_number, nif, address, active)
+    VALUES ('André Páscoa', 'PrivateClient', '962249051', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true),
+           ('BE Fit', 'InstitutionalClient', '1234', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true);
 
 
     INSERT INTO private_clients (id, citizen_card_number)
@@ -36,7 +38,7 @@ BEGIN
            (3, 2, '33-44-55', 0);
 
 
-    INSERT INTO drivers
+    INSERT INTO drivers (vehicle_id, name, phone_number)
     VALUES (1, 'Sonic', '962249051'),
            (2, 'Tails', '333444555'),
            (3, 'Eggman', '542341141');

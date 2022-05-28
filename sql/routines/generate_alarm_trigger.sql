@@ -10,6 +10,7 @@ DROP TRIGGER IF EXISTS generate_alarm ON gps_data CASCADE;
                     @green_zone_radius
                     @gps_location
     Return:         true if the gps location is inside the green zone; false otherwise
+TODO: change radius from kilometers to decimal degrees
 */
 CREATE OR REPLACE FUNCTION location_inside_green_zone(
     green_zone_center POINT,

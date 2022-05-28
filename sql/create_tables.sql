@@ -5,6 +5,7 @@ CALL delete_tables();
 CREATE TABLE clients
 (
     id           SERIAL PRIMARY KEY,
+    dtype        VARCHAR(50)  NOT NULL,
     referral     INT          NULL REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name         VARCHAR(60)  NOT NULL,
     phone_number VARCHAR(20)  NOT NULL,
@@ -28,7 +29,7 @@ CREATE TABLE institutional_clients
 CREATE TABLE gps_device_states
 (
     id     SERIAL PRIMARY KEY,
-    status VARCHAR(20)
+    status VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE gps_devices
