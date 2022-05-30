@@ -14,7 +14,6 @@ public abstract class Repository<T> {
     private final Mapper<T> mapper;
 
     public void deleteAll() {
-
         getEntityManager()
                 .createQuery("DELETE FROM " + genericType.getSimpleName()).executeUpdate();
     }
@@ -31,7 +30,6 @@ public abstract class Repository<T> {
     }
 
     public List<T> getAll() {
-
         return getEntityManager()
                 .createQuery("SELECT entity FROM " + genericType.getSimpleName() + " entity", genericType)
                 .getResultList();
