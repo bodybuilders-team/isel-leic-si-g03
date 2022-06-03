@@ -7,7 +7,7 @@
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
           <factory-entry name="projetoBase" value="9597f74b-115d-4a1f-bf9e-98d3b08a80f2" />
-          <factory-entry name="si_g03" />
+          <factory-entry name="si_g03" value="f0e1d34b-25bd-4a4f-9f89-533833c76adf" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
@@ -21,6 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -32,7 +33,7 @@
     <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-core:4.0.0-M3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.eclipse.angus:angus-activation:1.0.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: jakarta.activation:jakarta.activation-api:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.3.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.checkerframework:checker-qual:3.5.0" level="project" />
   </component>
 </module>

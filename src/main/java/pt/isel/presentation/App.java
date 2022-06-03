@@ -1,6 +1,7 @@
-package pt.isel.Presentation;
+package pt.isel.presentation;
 
 import java.util.Optional;
+
 import pt.isel.dal.Mapper;
 import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.clients.PrivateClientRepository;
@@ -10,14 +11,23 @@ import pt.isel.model.clients.PrivateClient;
 
 
 /**
- * Hello world!
+ * SI Project - 2021/22 Summer Semmester - LEIC41D - Group 03
+ *
+ * @author 48089 André Páscoa
+ * @author 48280 André Jesus
+ * @author 48287 Nyckollas Brandão
  */
 public class App {
 
-    public static void main(String[] args) throws Exception {
-        Mapper<InstitutionalClient> institutionalClientMapper = new Mapper<>() {};
+    /**
+     * Application entry point.
+     */
+    public static void main(String[] args) {
+        Mapper<InstitutionalClient> institutionalClientMapper = new Mapper<>() {
+        };
 
-        Mapper<PrivateClient> privateClientMapper = new Mapper<>() {};
+        Mapper<PrivateClient> privateClientMapper = new Mapper<>() {
+        };
 
         PrivateClientRepository privateClientRepository = new PrivateClientRepository();
 

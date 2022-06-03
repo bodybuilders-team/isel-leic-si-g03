@@ -8,31 +8,60 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import pt.isel.model.gps.GpsData;
 
+/**
+ * Alarm entity.
+ */
 @Entity
 @Table(name = "alarms")
 public class Alarm {
 
+    /**
+     * The gps data associated with the alarm.
+     */
     @Id
     @OneToOne
     @JoinColumn(name = "gps_data_id")
-    private GpsData gps_data;
+    private GpsData gpsData;
 
+    /**
+     * The driver name.
+     */
     @Column(name = "driver_name", nullable = false)
     private String driverName;
 
 
-    public GpsData getData() {
-        return gps_data;
+    /**
+     * Gets the gps data.
+     *
+     * @return the gps data
+     */
+    public GpsData getGpsData() {
+        return gpsData;
     }
 
-    public void setData(GpsData data) {
-        this.gps_data = data;
+    /**
+     * Sets the gps data.
+     *
+     * @param gpsData the new gps data
+     */
+    public void setGpsData(GpsData gpsData) {
+        this.gpsData = gpsData;
     }
 
+    /**
+     * Gets the driver name.
+     *
+     * @return the driver name
+     */
     public String getDriverName() {
         return driverName;
     }
 
+    /**
+     * Sets the driver name.
+     *
+     * @param driverName the new driver name
+     */
     public void setDriverName(String driverName) {
         this.driverName = driverName;
     }

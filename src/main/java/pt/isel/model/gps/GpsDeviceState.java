@@ -5,32 +5,62 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
+/**
+ * GPDeviceState entity.
+ */
 @Entity
 @Table(name = "gps_device_states")
 public class GpsDeviceState {
+
+    /**
+     * The status id.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    /**
+     * The status name.
+     */
     @Column(nullable = false)
     private String status;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
+    /**
+     * Gets the status id.
+     *
+     * @return the status id
+     */
     @Id
     public Integer getId() {
         return id;
     }
 
+    /**
+     * Sets the status id.
+     *
+     * @param id the new status id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * Gets the status name.
+     *
+     * @return the status name
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * Sets the status name.
+     *
+     * @param status the new status name
+     */
     public void setStatus(String status) {
         this.status = status;
     }
