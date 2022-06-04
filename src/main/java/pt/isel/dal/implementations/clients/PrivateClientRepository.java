@@ -1,10 +1,9 @@
 package pt.isel.dal.implementations.clients;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.Query;
-
 import java.util.Optional;
-
 import pt.isel.dal.Repository;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;
@@ -19,10 +18,6 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
         super(em);
     }
 
-    public PrivateClientRepository(EntityManager em, Class<PrivateClient> genericType) {
-        super(em, genericType);
-    }
-
     /**
      * Gets the PrivateClient with the given name.
      *
@@ -33,6 +28,7 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
         return em
                 .createQuery("SELECT pc FROM PrivateClient pc WHERE pc.name = :name", PrivateClient.class)
                 .setParameter("name", name)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
                 .getResultStream()
                 .findFirst();
     }

@@ -15,14 +15,6 @@ import pt.isel.model.gps.data.GpsData;
 @Table(name = "alarms")
 public class Alarm {
 
-    public Alarm(GpsData gpsData, String driverName) {
-        this.gpsData = gpsData;
-        this.driverName = driverName;
-    }
-
-    // Needed for JPA...
-    public Alarm() {}
-
     /**
      * The gps data associated with the alarm.
      */
@@ -30,13 +22,19 @@ public class Alarm {
     @OneToOne
     @JoinColumn(name = "gps_data_id")
     private GpsData gpsData;
-
     /**
      * The driver name.
      */
     @Column(name = "driver_name", nullable = false)
     private String driverName;
 
+    public Alarm(GpsData gpsData, String driverName) {
+        this.gpsData = gpsData;
+        this.driverName = driverName;
+    }
+
+    // Needed for JPA...
+    public Alarm() {}
 
     /**
      * Gets the gps data.

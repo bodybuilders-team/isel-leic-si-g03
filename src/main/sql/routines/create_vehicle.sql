@@ -44,8 +44,8 @@ BEGIN
         RETURNING id INTO v_id;
 
         IF (gz_center_location IS NOT NULL AND gz_radius IS NOT NULL) THEN
-            INSERT INTO green_zones(vehicle_id, center_location, radius)
-            VALUES (v_id, gz_center_location, gz_radius)
+            INSERT INTO green_zones(vehicle_id, lat, lon, radius)
+            VALUES (v_id, gz_center_location[0], gz_center_location[1], gz_radius)
             RETURNING id INTO green_zone_id;
         END IF;
     END IF;

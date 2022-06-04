@@ -24,6 +24,35 @@ import static pt.isel.dal.PersistenceManager.getEntityManager;
 public class Vehicle {
 
     /**
+     * The vehicle id.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    /**
+     * The gps device associated with the vehicle.
+     */
+    @OneToOne
+    @JoinColumn(name = "gps_device_id", nullable = false)
+    private GpsDevice gpsDevice;
+    /**
+     * The client associated with the vehicle.
+     */
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+    /**
+     * The vehicle plate.
+     */
+    @Column(name = "license_plate", nullable = false)
+    private String licensePlate;
+    /**
+     * Number of alarms of the vehicle.
+     */
+    @Column(name = "num_alarms", nullable = false)
+    private Integer numAlarms;
+
+    /**
      * Creates a new instance of Vehicle.
      *
      * @param gpsDevice    the gps device
@@ -40,40 +69,6 @@ public class Vehicle {
 
     // Needed for JPA...
     public Vehicle() {}
-
-    /**
-     * The vehicle id.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    /**
-     * The gps device associated with the vehicle.
-     */
-    @OneToOne
-    @JoinColumn(name = "gps_device_id", nullable = false)
-    private GpsDevice gpsDevice;
-
-    /**
-     * The client associated with the vehicle.
-     */
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
-
-    /**
-     * The vehicle plate.
-     */
-    @Column(name = "license_plate", nullable = false)
-    private String licensePlate;
-
-    /**
-     * Number of alarms of the vehicle.
-     */
-    @Column(name = "num_alarms", nullable = false)
-    private Integer numAlarms;
-
 
     /**
      * Gets the vehicle id.

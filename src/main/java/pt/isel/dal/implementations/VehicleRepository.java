@@ -1,15 +1,19 @@
 package pt.isel.dal.implementations;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.Query;
 import jakarta.persistence.StoredProcedureQuery;
-import pt.isel.model.clients.Client;
-import pt.isel.utils.Utils;
+import java.sql.Connection;
+import org.eclipse.persistence.sessions.DatabaseLogin;
 import pt.isel.dal.Mapper;
+import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.Repository;
 import pt.isel.model.GreenZone;
 import pt.isel.model.Vehicle;
+import pt.isel.model.clients.Client;
 import pt.isel.model.clients.InstitutionalClient;
+import pt.isel.utils.Utils;
 
 
 /**
@@ -19,10 +23,6 @@ public class VehicleRepository extends Repository<Vehicle> {
 
     public VehicleRepository(EntityManager em) {
         super(em);
-    }
-
-    public VehicleRepository(EntityManager em, Class<Vehicle> genericType) {
-        super(em, genericType);
     }
 
     /**
@@ -36,17 +36,19 @@ public class VehicleRepository extends Repository<Vehicle> {
      * @param gz GreenZone to be created
      */
     public void createVehicle(Vehicle v, GreenZone gz) {
-        Query query = em
-                .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+        PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
 
-        query.setParameter(1, v.getGpsDevice().getId());
-        query.setParameter(2, v.getClient().getId());
-        query.setParameter(3, v.getLicensePlate());
-        query.setParameter(4, v.getNumAlarms());
-        query.setParameter(5, Utils.parsePoint(gz.getCenterLocation()));
-        query.setParameter(6, gz.getRadius());
+            Query query = em.createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
 
-        query.executeUpdate();
+            query.setParameter(1, v.getGpsDevice().getId());
+            query.setParameter(2, v.getClient().getId());
+            query.setParameter(3, v.getLicensePlate());
+            query.setParameter(4, v.getNumAlarms());
+            query.setParameter(5, Utils.parsePoint(gz.getCenterLocation()));
+            query.setParameter(6, gz.getRadius());
+
+            query.executeUpdate();
+        });
     }
 
     /**
@@ -56,17 +58,19 @@ public class VehicleRepository extends Repository<Vehicle> {
      * @param v Vehicle to be created
      */
     public void createVehicle(Vehicle v) {
-        Query query = em
-                .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+        PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
 
-        query.setParameter(1, v.getGpsDevice().getId());
-        query.setParameter(2, v.getClient().getId());
-        query.setParameter(3, v.getLicensePlate());
-        query.setParameter(4, v.getNumAlarms());
-        query.setParameter(5, null);
-        query.setParameter(6, null);
+            Query query = em.createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
 
-        query.executeUpdate();
+            query.setParameter(1, v.getGpsDevice().getId());
+            query.setParameter(2, v.getClient().getId());
+            query.setParameter(3, v.getLicensePlate());
+            query.setParameter(4, v.getNumAlarms());
+            query.setParameter(5, null);
+            query.setParameter(6, null);
+
+            query.executeUpdate();
+        });
     }
 
 
@@ -80,6 +84,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      * @param gz GreenZone to be created (optional)
      */
     public void nativeCreateVehicle(Vehicle v, GreenZone gz) {
+        em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
         // Get number of client cars
         int clientCarsCount = v.getClient().getVehicles().size();
 
@@ -100,6 +105,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      * @param v Vehicle to be created
      */
     public void nativeCreateVehicle(Vehicle v) {
+        em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
         // Get number of client cars
         int clientCarsCount = v.getClient().getVehicles().size();
 

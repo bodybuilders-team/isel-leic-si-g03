@@ -1,18 +1,18 @@
 package pt.isel.model.gps.data;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 import java.awt.geom.Point2D;
 import java.util.Date;
-
+import pt.isel.model.Point;
 import pt.isel.model.gps.device.GpsDevice;
 import pt.isel.utils.Utils;
 
@@ -23,35 +23,10 @@ import pt.isel.utils.Utils;
 public abstract class RetrievedGpsData {
 
     /**
-     * Creates a new instance of RetrievedGpsData.
-     *
-     * @param gpsDevice the gps device
-     * @param timestamp the timestamp
-     * @param location  the location
-     */
-    public RetrievedGpsData(GpsDevice gpsDevice, Date timestamp, String location) {
-        this.gpsDevice = gpsDevice;
-        this.timestamp = timestamp;
-        this.location = location;
-    }
-
-    // Needed for JPA...
-    public RetrievedGpsData() {}
-
-    /**
-     * The id of the retrieved gps data.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    /**
      * The gps device that retrieved the gps data.
      */
-    @ManyToOne
-    @JoinColumn(name = "device_id", nullable = false)
-    protected GpsDevice gpsDevice;
-
+    @Column(name = "device_id")
+    protected Integer gpsDeviceId;
     /**
      * The timestamp of the gps data.
      */
@@ -62,9 +37,34 @@ public abstract class RetrievedGpsData {
     /**
      * Location of the gps data.
      */
-    @Column(nullable = false, columnDefinition = "POINT")
-    protected String location;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "lat")),
+            @AttributeOverride(name = "y", column = @Column(name = "lon"))
+    })
+    protected Point location;
+    /**
+     * The id of the retrieved gps data.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    /**
+     * Creates a new instance of RetrievedGpsData.
+     *
+     * @param gpsDeviceId the gps device
+     * @param timestamp the timestamp
+     * @param location  the location
+     */
+    public RetrievedGpsData(Integer gpsDeviceId, Date timestamp, Point location) {
+        this.gpsDeviceId = gpsDeviceId;
+        this.timestamp = timestamp;
+        this.location = location;
+    }
+
+    // Needed for JPA...
+    public RetrievedGpsData() {}
 
     /**
      * Gets the id of the retrieved gps data.
@@ -90,17 +90,17 @@ public abstract class RetrievedGpsData {
      *
      * @return the gps device that retrieved the gps data
      */
-    public GpsDevice getGpsDevice() {
-        return gpsDevice;
+    public Integer getGpsDeviceId() {
+        return gpsDeviceId;
     }
 
     /**
      * Sets the gps device that retrieved the gps data.
      *
-     * @param gpsDevice the gps device that retrieved the gps data
+     * @param gpsDeviceId the gps device that retrieved the gps data
      */
-    public void setGpsDevice(GpsDevice gpsDevice) {
-        this.gpsDevice = gpsDevice;
+    public void setGpsDevice(Integer gpsDeviceId) {
+        this.gpsDeviceId = gpsDeviceId;
     }
 
     /**
@@ -126,8 +126,8 @@ public abstract class RetrievedGpsData {
      *
      * @return the location of the gps data
      */
-    public Point2D.Float getLocation() {
-        return Utils.parsePoint(location);
+    public Point getLocation() {
+        return location;
     }
 
     /**
@@ -135,15 +135,15 @@ public abstract class RetrievedGpsData {
      *
      * @param location the location of the gps data
      */
-    public void setLocation(Point2D.Float location) {
-        this.location = Utils.pointToString(location);
+    public void setLocation(Point location) {
+        this.location = location;
     }
 
     @Override
     public String toString() {
         return "RetrievedGpsData{" +
                 "id=" + id +
-                ", gpsDevice=" + gpsDevice +
+                ", gpsDevice=" + gpsDeviceId +
                 ", timestamp=" + timestamp +
                 ", location='" + location + '\'' +
                 '}';

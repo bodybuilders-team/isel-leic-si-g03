@@ -12,6 +12,12 @@ import jakarta.persistence.Table;
 public class InstitutionalClient extends Client {
 
     /**
+     * The client contact name.
+     */
+    @Column(name = "contact_name", nullable = false)
+    private String contactName;
+
+    /**
      * Creates a new instance of InstitutionalClient.
      *
      * @param name        the client name
@@ -35,13 +41,6 @@ public class InstitutionalClient extends Client {
 
     // Needed for JPA...
     public InstitutionalClient() {}
-
-    /**
-     * The client contact name.
-     */
-    @Column(name = "contact_name", nullable = false)
-    private String contactName;
-
 
     /**
      * Gets the client contact name.

@@ -2,6 +2,7 @@ package pt.isel.model.gps.data;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 /**
  * UnprocessedGPSData entity.
@@ -9,12 +10,14 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "unprocessed_gps_data")
 public class UnprocessedGpsData extends RetrievedGpsData {
+    @Version
+    private Integer version;
 
     @Override
     public String toString() {
-        return "InvalidGpsData{" +
+        return "UnprocessedGpsData{" +
                 "id=" + getId() +
-                ", gpsDevice=" + gpsDevice +
+                ", gpsDevice=" + gpsDeviceId +
                 ", timestamp=" + timestamp +
                 ", location=" + location +
                 '}';

@@ -1,5 +1,7 @@
 package pt.isel.model.gps.data;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,12 +12,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 import java.awt.geom.Point2D;
 import java.util.Date;
-
+import pt.isel.model.Point;
 import pt.isel.model.gps.device.GpsDevice;
-import pt.isel.utils.Utils;
 
 /**
  * GPSData entity.
@@ -25,13 +25,40 @@ import pt.isel.utils.Utils;
 public class GpsData {
 
     /**
+     * The GPS data id.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    /**
+     * The GPS device associated with this data.
+     */
+    @ManyToOne
+    @JoinColumn(name = "device_id", nullable = false)
+    private GpsDevice gpsDevice;
+    /**
+     * The timestamp of the data.
+     */
+    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
+    /**
+     * The location of the data.
+     */
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "lat", nullable = false)),
+            @AttributeOverride(name = "y", column = @Column(name = "lon", nullable = false))
+    })
+    private Point location;
+
+    /**
      * Creates a new instance of GPSData.
      *
      * @param gpsDevice the gps device
      * @param timestamp the timestamp
      * @param location  the location
      */
-    public GpsData(GpsDevice gpsDevice, Date timestamp, String location) {
+    public GpsData(GpsDevice gpsDevice, Date timestamp, Point location) {
         this.gpsDevice = gpsDevice;
         this.timestamp = timestamp;
         this.location = location;
@@ -39,34 +66,6 @@ public class GpsData {
 
     // Needed for JPA...
     public GpsData() {}
-
-    /**
-     * The GPS data id.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    /**
-     * The GPS device associated with this data.
-     */
-    @ManyToOne
-    @JoinColumn(name = "device_id", nullable = false)
-    private GpsDevice gpsDevice;
-
-    /**
-     * The timestamp of the data.
-     */
-    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
-
-    /**
-     * The location of the data.
-     */
-    @Column(nullable = false, columnDefinition = "POINT")
-    private String location;
-
 
     /**
      * Gets the GPS data id.
@@ -128,8 +127,8 @@ public class GpsData {
      *
      * @return the location of the data
      */
-    public Point2D.Float getLocation() {
-        return Utils.parsePoint(location);
+    public Point getLocation() {
+        return location;
     }
 
     /**
@@ -137,8 +136,8 @@ public class GpsData {
      *
      * @param location the location of the data
      */
-    public void setLocation(Point2D.Float location) {
-        this.location = Utils.pointToString(location);
+    public void setLocation(Point location) {
+        this.location = location;
     }
 
     @Override

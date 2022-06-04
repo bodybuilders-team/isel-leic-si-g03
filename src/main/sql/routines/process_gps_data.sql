@@ -17,12 +17,12 @@ BEGIN
     FOR temp_row IN SELECT * FROM unprocessed_gps_data
         LOOP
             BEGIN
-                INSERT INTO gps_data(device_id, timestamp, location)
-                VALUES (temp_row.device_id, temp_row.timestamp, temp_row.location);
+                INSERT INTO gps_data(device_id, timestamp, lat, lon)
+                VALUES (temp_row.device_id, temp_row.timestamp, temp_row.lat, temp_row.lon);
             EXCEPTION
                 WHEN OTHERS THEN
-                    INSERT INTO invalid_gps_data(device_id, timestamp, location)
-                    VALUES (temp_row.device_id, temp_row.timestamp, temp_row.location);
+                    INSERT INTO invalid_gps_data(device_id, timestamp, lat, lon)
+                    VALUES (temp_row.device_id, temp_row.timestamp, temp_row.lat, temp_row.lon);
             END;
 
             DELETE

@@ -17,6 +17,29 @@ import jakarta.persistence.Table;
 public class GreenZone {
 
     /**
+     * The id of the green zone.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    /**
+     * The vehicle associated with the green zone.
+     */
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+    /**
+     * The center of the green zone.
+     */
+    @Column(name = "center_location", nullable = false, columnDefinition = "POINT")
+    private String centerLocation;
+    /**
+     * The radius of the green zone.
+     */
+    @Column(name = "radius", nullable = false)
+    private Double radius;
+
+    /**
      * Creates a new instance of GreenZone.
      *
      * @param vehicle        the vehicle
@@ -31,33 +54,6 @@ public class GreenZone {
 
     // Needed for JPA...
     public GreenZone() {}
-
-    /**
-     * The id of the green zone.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    /**
-     * The vehicle associated with the green zone.
-     */
-    @ManyToOne
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    private Vehicle vehicle;
-
-    /**
-     * The center of the green zone.
-     */
-    @Column(name = "center_location", nullable = false, columnDefinition = "POINT")
-    private String centerLocation;
-
-    /**
-     * The radius of the green zone.
-     */
-    @Column(name = "radius", nullable = false)
-    private Double radius;
-
 
     /**
      * Gets the id of the green zone.

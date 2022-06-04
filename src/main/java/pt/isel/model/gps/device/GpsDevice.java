@@ -16,6 +16,19 @@ import jakarta.persistence.Table;
 public class GpsDevice {
 
     /**
+     * The id of the device.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    /**
+     * The device status.
+     */
+    @ManyToOne
+    @JoinColumn(name = "device_status", nullable = false)
+    private GpsDeviceState deviceStatus;
+
+    /**
      * Creates a new instance of GpsDevice.
      *
      * @param deviceStatus the device status
@@ -26,21 +39,6 @@ public class GpsDevice {
 
     // Needed for JPA...
     public GpsDevice() {}
-
-    /**
-     * The id of the device.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    /**
-     * The device status.
-     */
-    @ManyToOne
-    @JoinColumn(name = "device_status", nullable = false)
-    private GpsDeviceState deviceStatus;
-
 
     /**
      * Gets the id of the device.

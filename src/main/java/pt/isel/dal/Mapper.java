@@ -1,10 +1,8 @@
 package pt.isel.dal;
 
 import jakarta.persistence.EntityManager;
-
-import java.util.Optional;
-
 import jakarta.persistence.LockModeType;
+import java.util.Optional;
 import pt.isel.utils.GenericTypeSolver;
 
 /**
@@ -16,14 +14,13 @@ import pt.isel.utils.GenericTypeSolver;
 public abstract class Mapper<T> {
 
     /**
+     * Entity manager of the entity.
+     */
+    protected final EntityManager em;
+    /**
      * Generic type of the entity.
      */
     private final Class<T> genericType;
-
-    /**
-     * Entity manager of the entity.
-     */
-    private final EntityManager em;
 
     /**
      * Creates a new mapper for the specified entity type.
@@ -70,6 +67,7 @@ public abstract class Mapper<T> {
      */
     public T update(T entity) {
         em.flush();
+        em.lock(entity, LockModeType.PESSIMISTIC_WRITE);
         return em.merge(entity);
     }
 

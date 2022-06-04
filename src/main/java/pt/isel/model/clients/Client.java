@@ -12,10 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import java.io.Serializable;
 import java.util.List;
-
 import pt.isel.model.Vehicle;
 
 
@@ -26,6 +24,57 @@ import pt.isel.model.Vehicle;
 @Table(name = "clients")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Client implements Serializable {
+
+    /**
+     * Maximum number of vehicles that a private client can own.
+     */
+    public static Integer maxVehicles = 3;
+    /**
+     * The client referral.
+     */
+    @ManyToOne
+    @JoinColumn(name = "referral")
+    protected Client referral;
+    /**
+     * The client name.
+     */
+    @Column(nullable = false)
+    protected String name;
+    /**
+     * The client phone number.
+     */
+    @Column(name = "phone_number", nullable = false)
+    protected String phoneNumber;
+    /**
+     * The client nif.
+     */
+    @Column(nullable = false)
+    protected String nif;
+    /**
+     * The client address.
+     */
+    @Column(nullable = false)
+    protected String address;
+    /**
+     * True if the client is active, false otherwise.
+     */
+    @Column(nullable = false)
+    protected Boolean active;
+    /**
+     * The client id.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    /**
+     * List of vehicles owned by the client.
+     */
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Vehicle> vehicles;
+    /**
+     * Client data type.
+     */
+    private String dtype;
 
     /**
      * Creates a new instance of Client.
@@ -46,67 +95,6 @@ public abstract class Client implements Serializable {
 
     // Needed for JPA...
     public Client() {}
-
-    /**
-     * The client id.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    /**
-     * The client referral.
-     */
-    @ManyToOne
-    @JoinColumn(name = "referral")
-    protected Client referral;
-
-    /**
-     * List of vehicles owned by the client.
-     */
-    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Vehicle> vehicles;
-
-    /**
-     * Client data type.
-     */
-    private String dtype;
-
-    /**
-     * The client name.
-     */
-    @Column(nullable = false)
-    protected String name;
-
-    /**
-     * The client phone number.
-     */
-    @Column(name = "phone_number", nullable = false)
-    protected String phoneNumber;
-
-    /**
-     * The client nif.
-     */
-    @Column(nullable = false)
-    protected String nif;
-
-    /**
-     * The client address.
-     */
-    @Column(nullable = false)
-    protected String address;
-
-    /**
-     * True if the client is active, false otherwise.
-     */
-    @Column(nullable = false)
-    protected Boolean active;
-
-    /**
-     * Maximum number of vehicles that a private client can own.
-     */
-    public static Integer maxVehicles = 3;
-
 
     /**
      * Gets the client id.

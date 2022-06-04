@@ -14,6 +14,23 @@ import jakarta.persistence.Table;
 public class Driver {
 
     /**
+     * The vehicle that the driver drives.
+     */
+    @Id
+    @OneToOne
+    private Vehicle vehicle;
+    /**
+     * The driver's name.
+     */
+    @Column(nullable = false)
+    private String name;
+    /**
+     * The driver's phone number.
+     */
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
+    /**
      * Creates a new instance of Driver.
      *
      * @param vehicle     the vehicle
@@ -28,26 +45,6 @@ public class Driver {
 
     // Needed for JPA...
     public Driver() {}
-
-    /**
-     * The vehicle that the driver drives.
-     */
-    @Id
-    @OneToOne
-    private Vehicle vehicle;
-
-    /**
-     * The driver's name.
-     */
-    @Column(nullable = false)
-    private String name;
-
-    /**
-     * The driver's phone number.
-     */
-    @Column(name = "phone_number", nullable = false)
-    private String phoneNumber;
-
 
     /**
      * Gets the vehicle that the driver drives.

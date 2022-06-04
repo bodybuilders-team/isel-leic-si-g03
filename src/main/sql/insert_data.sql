@@ -59,25 +59,25 @@ BEGIN
            (3, 'Eggman', '542341141');
 
 
-    INSERT INTO green_zones (vehicle_id, center_location, radius)
-    VALUES (1, point(38.6556752, -9.0100229), 5),
-           (1, point(39.511, -9.0100229), 5),
-           (2, point(28.6556752, -9.0100229), 10),
-           (3, point(18.6556752, -9.0100229), 15);
+    INSERT INTO green_zones (vehicle_id, lat, lon, radius)
+    VALUES (1, 38.6556752, -9.0100229, 5),
+           (1, 39.511, -9.0100229, 5),
+           (2, 28.6556752, -9.0100229, 10),
+           (3, 18.6556752, -9.0100229, 15);
 
 
-    INSERT INTO unprocessed_gps_data (device_id, timestamp, location)
-    VALUES (1, '2022-04-12 04:05:06 UTC+1', point(18, 9)),
-           (1, '2020-04-12 04:05:06 PST', point(18, 9)),
-           (3, '2020-04-12 04:05:06 UTC+0', point(18, 9));
+    INSERT INTO unprocessed_gps_data (device_id, timestamp, lat, lon, version)
+    VALUES (1, '2022-04-12 04:05:06 UTC+1', 18, 9, 0),
+           (1, '2020-04-12 04:05:06 PST', 18, 9, 0),
+           (3, '2020-04-12 04:05:06 UTC+0', 18, 9, 0);
 
 
-    INSERT INTO gps_data (device_id, timestamp, location)
-    VALUES (1, '2022-04-12 04:05:06 UTC+3', point(18, 10)),
-           (2, '2019-04-12 04:05:06 UTC+3', point(0, 10)),
-           (2, '2020-04-12 04:05:06 UTC+3', point(18, 0)),
-           (3, '2022-09-05 04:05:06 UTC+3', point(18, 95)),
-           (3, '2018-04-12 04:05:06 UTC+3', point(166, 25));
+    INSERT INTO gps_data (device_id, timestamp, lat, lon)
+    VALUES (1, '2022-04-12 04:05:06 UTC+3', 18, 10),
+           (2, '2019-04-12 04:05:06 UTC+3', 0, 10),
+           (2, '2020-04-12 04:05:06 UTC+3', 18, 0),
+           (3, '2022-09-05 04:05:06 UTC+3', 18, 95),
+           (3, '2018-04-12 04:05:06 UTC+3',166, 25);
 
     INSERT INTO alarms (gps_data_id, driver_name)
     VALUES (1, 'Sonic'),

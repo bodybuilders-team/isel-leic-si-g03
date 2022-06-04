@@ -66,7 +66,8 @@ BEGIN
                      JOIN drivers ON vehicles.id = drivers.vehicle_id
             INTO v_driver_name;
 
-            IF location_inside_green_zone(green_zone.center_location, green_zone.radius, NEW.location) AND
+            IF location_inside_green_zone(point(green_zone.lat, green_zone.lon), green_zone.radius,
+                                          point(NEW.lat, NEW.lon)) AND
                v_device_status != 'AlarmPause'
             THEN
                 RETURN NEW;
