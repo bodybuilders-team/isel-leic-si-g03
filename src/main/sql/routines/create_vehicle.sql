@@ -20,7 +20,8 @@ CREATE OR REPLACE PROCEDURE create_vehicle(
     v_client_id INTEGER,
     v_license_plate VARCHAR(10),
     v_num_alarms INTEGER,
-    gz_center_location POINT DEFAULT NULL,
+    gz_center_location_lat FLOAT DEFAULT NULL,
+    gz_center_location_lon FLOAT DEFAULT NULL,
     gz_radius DOUBLE PRECISION DEFAULT NULL
 )
     LANGUAGE plpgsql
@@ -43,9 +44,9 @@ BEGIN
         VALUES (v_gps_device_id, v_client_id, v_license_plate, v_num_alarms)
         RETURNING id INTO v_id;
 
-        IF (gz_center_location IS NOT NULL AND gz_radius IS NOT NULL) THEN
+        IF (gz_center_location_lat IS NOT NULL AND gz_center_location_lon IS NOT NULL AND gz_radius IS NOT NULL) THEN
             INSERT INTO green_zones(vehicle_id, lat, lon, radius)
-            VALUES (v_id, gz_center_location[0], gz_center_location[1], gz_radius)
+            VALUES (v_id, gz_center_location_lat, gz_center_location_lon, gz_radius)
             RETURNING id INTO green_zone_id;
         END IF;
     END IF;

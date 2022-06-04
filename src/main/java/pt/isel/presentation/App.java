@@ -11,10 +11,13 @@ import pt.isel.dal.implementations.VehicleRepository;
 import pt.isel.dal.implementations.clients.PrivateClientRepository;
 import pt.isel.model.AlarmData;
 import pt.isel.model.GreenZone;
+import pt.isel.model.Point;
 import pt.isel.model.Vehicle;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;
 import pt.isel.model.gps.device.GpsDevice;
+import pt.isel.utils.Utils;
+
 
 import static pt.isel.utils.ConsoleUI.requestBoolean;
 import static pt.isel.utils.ConsoleUI.requestDouble;
@@ -257,7 +260,7 @@ public class App {
             String centerLocation = requestString("Center Location: ");
             Double radius = requestDouble("Radius: ");
 
-            GreenZone greenZone = new GreenZone(vehicle, centerLocation, radius);
+            GreenZone greenZone = new GreenZone(vehicle, Point.parsePoint(centerLocation), radius);
 
             Repository<GreenZone> greenZoneRepository = new Repository<>(em) {};
             greenZoneRepository.add(greenZone);

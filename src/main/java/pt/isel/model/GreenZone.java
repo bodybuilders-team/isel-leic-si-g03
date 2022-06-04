@@ -1,6 +1,9 @@
 package pt.isel.model;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,8 +34,13 @@ public class GreenZone {
     /**
      * The center of the green zone.
      */
-    @Column(name = "center_location", nullable = false, columnDefinition = "POINT")
-    private String centerLocation;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "lat")),
+            @AttributeOverride(name = "y", column = @Column(name = "lon"))
+    })
+    private Point centerLocation;
     /**
      * The radius of the green zone.
      */
@@ -46,7 +54,7 @@ public class GreenZone {
      * @param centerLocation the center location
      * @param radius         the radius
      */
-    public GreenZone(Vehicle vehicle, String centerLocation, Double radius) {
+    public GreenZone(Vehicle vehicle, Point centerLocation, Double radius) {
         this.vehicle = vehicle;
         this.centerLocation = centerLocation;
         this.radius = radius;
@@ -96,7 +104,7 @@ public class GreenZone {
      *
      * @return the center of the green zone.
      */
-    public String getCenterLocation() {
+    public Point getCenterLocation() {
         return centerLocation;
     }
 
@@ -105,7 +113,7 @@ public class GreenZone {
      *
      * @param centerLocation the center of the green zone.
      */
-    public void setCenterLocation(String centerLocation) {
+    public void setCenterLocation(Point centerLocation) {
         this.centerLocation = centerLocation;
     }
 

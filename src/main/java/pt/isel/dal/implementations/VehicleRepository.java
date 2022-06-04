@@ -10,6 +10,7 @@ import pt.isel.dal.Mapper;
 import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.Repository;
 import pt.isel.model.GreenZone;
+import pt.isel.model.Point;
 import pt.isel.model.Vehicle;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.InstitutionalClient;
@@ -38,14 +39,15 @@ public class VehicleRepository extends Repository<Vehicle> {
     public void createVehicle(Vehicle v, GreenZone gz) {
         PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
 
-            Query query = em.createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+            Query query = em.createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::FLOAT,?::FLOAT,?::DOUBLE)");
 
             query.setParameter(1, v.getGpsDevice().getId());
             query.setParameter(2, v.getClient().getId());
             query.setParameter(3, v.getLicensePlate());
             query.setParameter(4, v.getNumAlarms());
-            query.setParameter(5, Utils.parsePoint(gz.getCenterLocation()));
-            query.setParameter(6, gz.getRadius());
+            query.setParameter(5, gz.getCenterLocation().getX());
+            query.setParameter(6, gz.getCenterLocation().getY());
+            query.setParameter(7, gz.getRadius());
 
             query.executeUpdate();
         });
@@ -68,6 +70,7 @@ public class VehicleRepository extends Repository<Vehicle> {
             query.setParameter(4, v.getNumAlarms());
             query.setParameter(5, null);
             query.setParameter(6, null);
+            query.setParameter(7, null);
 
             query.executeUpdate();
         });
