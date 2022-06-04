@@ -4,10 +4,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
+
 import org.eclipse.persistence.internal.jpa.EntityManagerImpl;
 import org.eclipse.persistence.sessions.DatabaseLogin;
 import org.eclipse.persistence.sessions.Session;
@@ -22,10 +24,12 @@ public class PersistenceManager {
      * Entity manager stored in a thread local variable.
      */
     private static final ThreadLocal<EntityManager> threadLocalEm = ThreadLocal.withInitial(() -> null);
+
     /**
      * Name of the persistence unit.
      */
     private static final String persistanceUnitName;
+
     /**
      * Entity manager factory.
      */
@@ -34,6 +38,7 @@ public class PersistenceManager {
     static {
         Properties props = new Properties();
         InputStream propsStream = PersistenceManager.class.getResourceAsStream("/persistence.properties");
+
         try {
             props.load(propsStream);
 
@@ -123,6 +128,12 @@ public class PersistenceManager {
         }
     }
 
+    /**
+     * Executes a transaction, given a runnable and an isolation level.
+     *
+     * @param transactionIsolationLevel the isolation level of the transaction
+     * @param consumer                  the runnable to be executed
+     */
     public static void executeWithIsolationLevel(int transactionIsolationLevel, Consumer<EntityManager> consumer) {
         EntityManager em = getEntityManager();
 

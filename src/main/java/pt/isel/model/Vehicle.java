@@ -29,23 +29,27 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     /**
      * The gps device associated with the vehicle.
      */
     @OneToOne
     @JoinColumn(name = "gps_device_id", nullable = false)
     private GpsDevice gpsDevice;
+
     /**
      * The client associated with the vehicle.
      */
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
     /**
      * The vehicle plate.
      */
     @Column(name = "license_plate", nullable = false)
     private String licensePlate;
+
     /**
      * Number of alarms of the vehicle.
      */

@@ -22,12 +22,19 @@ public class Alarm {
     @OneToOne
     @JoinColumn(name = "gps_data_id")
     private GpsData gpsData;
+
     /**
      * The driver name.
      */
     @Column(name = "driver_name", nullable = false)
     private String driverName;
 
+    /**
+     * Creates a new instance of Alarm.
+     *
+     * @param gpsData    the gps data
+     * @param driverName the driver name
+     */
     public Alarm(GpsData gpsData, String driverName) {
         this.gpsData = gpsData;
         this.driverName = driverName;

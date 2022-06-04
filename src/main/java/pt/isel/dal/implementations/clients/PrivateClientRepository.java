@@ -3,7 +3,9 @@ package pt.isel.dal.implementations.clients;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.Query;
+
 import java.util.Optional;
+
 import pt.isel.dal.Repository;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;

@@ -2,3 +2,4 @@ TODO: Exercise 2 - Optimistic locking
 TODO: Update data models
 TODO: Review annotations @OneToMany, @ManyToOne, @OneToOne
 TODO: Add unit tests
+TODO: Check tests.sql -> tests are not working anymore

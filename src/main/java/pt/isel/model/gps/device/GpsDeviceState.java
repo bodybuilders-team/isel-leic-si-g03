@@ -20,6 +20,7 @@ public class GpsDeviceState {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     /**
      * The status name.
      */

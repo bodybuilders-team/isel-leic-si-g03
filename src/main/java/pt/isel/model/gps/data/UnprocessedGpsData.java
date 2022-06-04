@@ -10,6 +10,10 @@ import jakarta.persistence.Version;
 @Entity
 @Table(name = "unprocessed_gps_data")
 public class UnprocessedGpsData extends RetrievedGpsData {
+
+    /**
+     * The version of the entity.
+     */
     @Version
     private Integer version;
 

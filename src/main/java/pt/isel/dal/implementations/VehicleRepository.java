@@ -4,17 +4,15 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.Query;
 import jakarta.persistence.StoredProcedureQuery;
-import java.sql.Connection;
+
 import org.eclipse.persistence.sessions.DatabaseLogin;
 import pt.isel.dal.Mapper;
 import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.Repository;
 import pt.isel.model.GreenZone;
-import pt.isel.model.Point;
 import pt.isel.model.Vehicle;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.InstitutionalClient;
-import pt.isel.utils.Utils;
 
 
 /**
@@ -39,7 +37,8 @@ public class VehicleRepository extends Repository<Vehicle> {
     public void createVehicle(Vehicle v, GreenZone gz) {
         PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
 
-            Query query = em.createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::FLOAT,?::FLOAT,?::DOUBLE)");
+            Query query = em
+                    .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
 
             query.setParameter(1, v.getGpsDevice().getId());
             query.setParameter(2, v.getClient().getId());
@@ -62,7 +61,8 @@ public class VehicleRepository extends Repository<Vehicle> {
     public void createVehicle(Vehicle v) {
         PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
 
-            Query query = em.createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+            Query query = em
+                    .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
 
             query.setParameter(1, v.getGpsDevice().getId());
             query.setParameter(2, v.getClient().getId());
@@ -88,6 +88,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      */
     public void nativeCreateVehicle(Vehicle v, GreenZone gz) {
         em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
+
         // Get number of client cars
         int clientCarsCount = v.getClient().getVehicles().size();
 
@@ -109,6 +110,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      */
     public void nativeCreateVehicle(Vehicle v) {
         em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
+
         // Get number of client cars
         int clientCarsCount = v.getClient().getVehicles().size();
 

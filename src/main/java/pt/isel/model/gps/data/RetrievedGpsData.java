@@ -10,11 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import java.awt.geom.Point2D;
+
 import java.util.Date;
+
 import pt.isel.model.Point;
-import pt.isel.model.gps.device.GpsDevice;
-import pt.isel.utils.Utils;
 
 /**
  * RetrievedGpsData entity.
@@ -27,6 +26,7 @@ public abstract class RetrievedGpsData {
      */
     @Column(name = "device_id")
     protected Integer gpsDeviceId;
+
     /**
      * The timestamp of the gps data.
      */
@@ -43,6 +43,7 @@ public abstract class RetrievedGpsData {
             @AttributeOverride(name = "y", column = @Column(name = "lon"))
     })
     protected Point location;
+
     /**
      * The id of the retrieved gps data.
      */
@@ -54,8 +55,8 @@ public abstract class RetrievedGpsData {
      * Creates a new instance of RetrievedGpsData.
      *
      * @param gpsDeviceId the gps device
-     * @param timestamp the timestamp
-     * @param location  the location
+     * @param timestamp   the timestamp
+     * @param location    the location
      */
     public RetrievedGpsData(Integer gpsDeviceId, Date timestamp, Point location) {
         this.gpsDeviceId = gpsDeviceId;

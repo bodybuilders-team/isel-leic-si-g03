@@ -16,7 +16,6 @@ import pt.isel.model.Vehicle;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;
 import pt.isel.model.gps.device.GpsDevice;
-import pt.isel.utils.Utils;
 
 
 import static pt.isel.utils.ConsoleUI.requestBoolean;

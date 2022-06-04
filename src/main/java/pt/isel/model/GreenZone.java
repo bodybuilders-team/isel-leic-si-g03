@@ -25,12 +25,14 @@ public class GreenZone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     /**
      * The vehicle associated with the green zone.
      */
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
+
     /**
      * The center of the green zone.
      */
@@ -41,6 +43,7 @@ public class GreenZone {
             @AttributeOverride(name = "y", column = @Column(name = "lon"))
     })
     private Point centerLocation;
+
     /**
      * The radius of the green zone.
      */

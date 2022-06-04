@@ -2,9 +2,11 @@ package pt.isel.dal;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+
 import pt.isel.utils.GenericTypeSolver;
 
 /**
@@ -19,10 +21,12 @@ public abstract class Repository<T> {
      * Mapper for the entity.
      */
     protected final Mapper<T> mapper;
+
     /**
      * Entity manager.
      */
     protected final EntityManager em;
+
     /**
      * Generic type of the entity.
      */

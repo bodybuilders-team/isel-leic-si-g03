@@ -13,7 +13,9 @@ public class GpsDataProcessor extends TimerTask {
 
     @Override
     public void run() {
-        execute((em) -> em.createNativeQuery("call process_gps_data()")
-                .executeUpdate());
+        execute((em) ->
+                em.createNativeQuery("call process_gps_data()")
+                        .executeUpdate()
+        );
     }
 }

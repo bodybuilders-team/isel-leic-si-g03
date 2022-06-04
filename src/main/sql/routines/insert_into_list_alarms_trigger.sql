@@ -26,8 +26,8 @@ BEGIN
     INTO vehicle;
 
     -- Insert new gps data
-    INSERT INTO gps_data(id, device_id, timestamp, location)
-    VALUES (NEW.gps_data_id, vehicle.gps_device_id, NEW.timestamp, NEW.location);
+    INSERT INTO gps_data(id, device_id, timestamp, lat, lon)
+    VALUES (NEW.gps_data_id, vehicle.gps_device_id, NEW.timestamp, NEW.lat, NEW.lon);
 
     RETURN NEW;
 END;

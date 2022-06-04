@@ -95,7 +95,7 @@ $$
         SELECT get_alarms_count(2022)
         INTO alarms_count;
 
-        IF (alarms_count = 1) THEN
+        IF (alarms_count = 2) THEN
             RAISE NOTICE '2e) Test 1: Get alarms count without license plate - Scenario 1: OK';
         ELSE
             RAISE EXCEPTION '2e) Test 1: Get alarms count without license plate - Scenario 1: NOK';
@@ -115,7 +115,7 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        SELECT get_alarms_count(2020)
+        SELECT get_alarms_count(1000)
         INTO alarms_count;
 
         IF (alarms_count = 0) THEN
@@ -186,8 +186,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO unprocessed_gps_data(device_id, timestamp, location)
-        VALUES (1, '2022-04-12 14:05:06 UTC+1', point(30, 15));
+        INSERT INTO unprocessed_gps_data(device_id, timestamp, lat, lon, version)
+        VALUES (1, '2022-04-12 14:05:06 UTC+1', 30, 15, 0);
 
         CALL process_gps_data();
 
@@ -216,8 +216,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO unprocessed_gps_data(device_id, timestamp, location)
-        VALUES (10, '2022-04-12 14:05:06 UTC+1', point(30, 15));
+        INSERT INTO unprocessed_gps_data(device_id, timestamp, lat, lon, version)
+        VALUES (10, '2022-04-12 14:05:06 UTC+1', 30, 15, 0);
 
         CALL process_gps_data();
 
@@ -282,8 +282,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO gps_data(device_id, timestamp, location)
-        VALUES (1, '2022-04-12 14:05:06 UTC+1', point(38, -9));
+        INSERT INTO gps_data(device_id, timestamp, lat, lon)
+        VALUES (1, '2022-04-12 14:05:06 UTC+1', 38, -9);
 
         SELECT *
         FROM alarms
@@ -311,8 +311,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO gps_data(device_id, timestamp, location)
-        VALUES (1, '2022-04-12 14:05:06 UTC+1', point(-50, -50));
+        INSERT INTO gps_data(device_id, timestamp, lat, lon)
+        VALUES (1, '2022-04-12 14:05:06 UTC+1', -50, -50);
 
         SELECT *
         FROM alarms
@@ -440,7 +440,8 @@ $$
 
         SELECT *
         FROM green_zones
-        WHERE center_location ~= point(10, 512)
+        WHERE lat == 10
+          AND lon = 512
         INTO green_zone;
 
         IF (green_zone IS NOT NULL) THEN
@@ -492,8 +493,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO list_alarms(gps_data_id, license_plate, timestamp, location)
-        VALUES (420, '88-66-33', '2022-02-12 17:05:06.000000 +00:00', point(11, 11));
+        INSERT INTO list_alarms(gps_data_id, license_plate, timestamp, lat, lon)
+        VALUES (420, '88-66-33', '2022-02-12 17:05:06.000000 +00:00', 11, 11);
 
         SELECT *
         FROM list_alarms
@@ -523,8 +524,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO invalid_gps_data(device_id, timestamp, location)
-        VALUES (1, test_timestamp, point(11, 11));
+        INSERT INTO invalid_gps_data(device_id, timestamp, lat, lon)
+        VALUES (1, test_timestamp, 11, 11);
 
         CALL clear_invalid_gps_data();
 
@@ -554,8 +555,8 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        INSERT INTO invalid_gps_data(device_id, timestamp, location)
-        VALUES (1, test_timestamp, point(11, 11));
+        INSERT INTO invalid_gps_data(device_id, timestamp, lat, lon)
+        VALUES (1, test_timestamp, 11, 11);
 
         CALL clear_invalid_gps_data();
 
@@ -655,8 +656,8 @@ $$
         INTO prev_alarm_count;
 
         -- gps data triggers alarm
-        INSERT INTO gps_data(device_id, timestamp, location)
-        VALUES (2, '2022-03-12 07:05:06.000000 +00:00', point(0, 0));
+        INSERT INTO gps_data(device_id, timestamp, lat, lon)
+        VALUES (2, '2022-03-12 07:05:06.000000 +00:00', 0, 0);
 
         SELECT num_alarms
         FROM vehicles

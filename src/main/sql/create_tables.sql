@@ -43,8 +43,8 @@ CREATE TABLE gps_data
     id        SERIAL PRIMARY KEY,
     device_id INT         NOT NULL REFERENCES gps_devices (id) ON DELETE CASCADE ON UPDATE CASCADE,
     timestamp TIMESTAMPTZ NOT NULL,
-    lat  FLOAT NOT NULL,
-    lon  FLOAT NOT NULL
+    lat       FLOAT       NOT NULL,
+    lon       FLOAT       NOT NULL
 );
 
 CREATE TABLE vehicles
@@ -58,11 +58,11 @@ CREATE TABLE vehicles
 
 CREATE TABLE green_zones
 (
-    id              SERIAL PRIMARY KEY,
-    vehicle_id      INT              NOT NULL REFERENCES vehicles (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    lat  FLOAT NOT NULL,
-    lon  FLOAT NOT NULL,
-    radius          DOUBLE PRECISION NOT NULL
+    id         SERIAL PRIMARY KEY,
+    vehicle_id INT              NOT NULL REFERENCES vehicles (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    lat        FLOAT            NOT NULL,
+    lon        FLOAT            NOT NULL,
+    radius     DOUBLE PRECISION NOT NULL
 );
 
 CREATE TABLE drivers
@@ -82,17 +82,17 @@ CREATE TABLE unprocessed_gps_data
 (
     id        SERIAL PRIMARY KEY,
     timestamp TIMESTAMPTZ,
-    lat  FLOAT,
-    lon  FLOAT,
+    lat       FLOAT,
+    lon       FLOAT,
     device_id INT,
-    version  INT NOT NULL
+    version   INT NOT NULL
 );
 
 CREATE TABLE invalid_gps_data
 (
     id        SERIAL PRIMARY KEY,
     timestamp TIMESTAMPTZ,
-    lat  FLOAT,
-    lon  FLOAT,
+    lat       FLOAT,
+    lon       FLOAT,
     device_id INT
 );

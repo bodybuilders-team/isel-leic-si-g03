@@ -12,10 +12,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import java.awt.geom.Point2D;
-import java.util.Date;
 import pt.isel.model.Point;
 import pt.isel.model.gps.device.GpsDevice;
+
+import java.util.Date;
 
 /**
  * GPSData entity.
@@ -30,18 +30,21 @@ public class GpsData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     /**
      * The GPS device associated with this data.
      */
     @ManyToOne
     @JoinColumn(name = "device_id", nullable = false)
     private GpsDevice gpsDevice;
+
     /**
      * The timestamp of the data.
      */
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
+
     /**
      * The location of the data.
      */

@@ -19,11 +19,13 @@ public class Driver {
     @Id
     @OneToOne
     private Vehicle vehicle;
+
     /**
      * The driver's name.
      */
     @Column(nullable = false)
     private String name;
+
     /**
      * The driver's phone number.
      */
