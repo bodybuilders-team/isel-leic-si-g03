@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 
 import java.util.Optional;
 
+import jakarta.persistence.LockModeType;
 import pt.isel.utils.GenericTypeSolver;
 
 /**
@@ -46,10 +47,10 @@ public abstract class Mapper<T> {
     /**
      * Creates a new entity.
      *
-     * @param client the entity to be created
+     * @param entity the entity to be created
      */
-    public void create(T client) {
-        em.persist(client);
+    public void create(T entity) {
+        em.persist(entity);
     }
 
     /**
@@ -59,25 +60,26 @@ public abstract class Mapper<T> {
      * @return the entity with the given id
      */
     public Optional<T> read(int id) {
-        return Optional.ofNullable(em.find(genericType, id));
+        return Optional.ofNullable(em.find(genericType, id, LockModeType.PESSIMISTIC_READ));
     }
 
     /**
      * Updates an entity.
      *
-     * @param client the entity to be updated
+     * @param entity the entity to be updated
      */
-    public T update(T client) {
-        return em.merge(client);
+    public T update(T entity) {
+        em.flush();
+        return em.merge(entity);
     }
 
     /**
      * Deletes an entity.
      *
-     * @param client the entity to be deleted
+     * @param entity the entity to be deleted
      */
-    public void delete(T client) {
-        em.remove(client);
+    public void delete(T entity) {
+        em.remove(entity);
     }
 
 }

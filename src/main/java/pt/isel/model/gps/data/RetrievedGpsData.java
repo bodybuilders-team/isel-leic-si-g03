@@ -1,77 +1,76 @@
-package pt.isel.model.gps;
+package pt.isel.model.gps.data;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 import java.awt.geom.Point2D;
 import java.util.Date;
 
+import pt.isel.model.gps.device.GpsDevice;
 import pt.isel.utils.Utils;
 
 /**
- * GPSData entity.
+ * RetrievedGpsData entity.
  */
-@Entity
-@Table(name = "gps_data")
-public class GpsData {
+@MappedSuperclass
+public abstract class RetrievedGpsData {
 
     /**
-     * Creates a new instance of GPSData.
+     * Creates a new instance of RetrievedGpsData.
      *
      * @param gpsDevice the gps device
      * @param timestamp the timestamp
      * @param location  the location
      */
-    public GpsData(GpsDevice gpsDevice, Date timestamp, String location) {
+    public RetrievedGpsData(GpsDevice gpsDevice, Date timestamp, String location) {
         this.gpsDevice = gpsDevice;
         this.timestamp = timestamp;
         this.location = location;
     }
 
     // Needed for JPA...
-    public GpsData() {
+    public RetrievedGpsData() {
     }
 
     /**
-     * The GPS data id.
+     * The id of the retrieved gps data.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
-     * The GPS device associated with this data.
+     * The gps device that retrieved the gps data.
      */
     @ManyToOne
     @JoinColumn(name = "device_id", nullable = false)
-    private GpsDevice gpsDevice;
+    protected GpsDevice gpsDevice;
 
     /**
-     * The timestamp of the data.
+     * The timestamp of the gps data.
      */
-    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    protected Date timestamp;
 
     /**
-     * The location of the data.
+     * Location of the gps data.
      */
     @Column(nullable = false, columnDefinition = "POINT")
-    private String location;
+    protected String location;
 
 
     /**
-     * Gets the GPS data id.
+     * Gets the id of the retrieved gps data.
      *
-     * @return the GPS data id
+     * @return the id of the retrieved gps data
      */
     @Id
     public Integer getId() {
@@ -79,63 +78,63 @@ public class GpsData {
     }
 
     /**
-     * Sets the GPS data id.
+     * Sets the id of the retrieved gps data.
      *
-     * @param id the GPS data id
+     * @param id the id of the retrieved gps data
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * Gets the GPS device associated with this data.
+     * Gets the gps device that retrieved the gps data.
      *
-     * @return the GPS device associated with this data
+     * @return the gps device that retrieved the gps data
      */
     public GpsDevice getGpsDevice() {
         return gpsDevice;
     }
 
     /**
-     * Sets the GPS device associated with this data.
+     * Sets the gps device that retrieved the gps data.
      *
-     * @param gpsDevice the GPS device associated with this data
+     * @param gpsDevice the gps device that retrieved the gps data
      */
     public void setGpsDevice(GpsDevice gpsDevice) {
         this.gpsDevice = gpsDevice;
     }
 
     /**
-     * Gets the timestamp of the data.
+     * Gets the timestamp of the gps data.
      *
-     * @return the timestamp of the data
+     * @return the timestamp of the gps data
      */
     public Date getTimestamp() {
         return timestamp;
     }
 
     /**
-     * Sets the timestamp of the data.
+     * Sets the timestamp of the gps data.
      *
-     * @param timestamp the timestamp of the data
+     * @param timestamp the timestamp of the gps data
      */
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
     /**
-     * Gets the location of the data.
+     * Gets the location of the gps data.
      *
-     * @return the location of the data
+     * @return the location of the gps data
      */
     public Point2D.Float getLocation() {
         return Utils.parsePoint(location);
     }
 
     /**
-     * Sets the location of the data.
+     * Sets the location of the gps data.
      *
-     * @param location the location of the data
+     * @param location the location of the gps data
      */
     public void setLocation(Point2D.Float location) {
         this.location = Utils.pointToString(location);
@@ -143,7 +142,7 @@ public class GpsData {
 
     @Override
     public String toString() {
-        return "GpsData{" +
+        return "RetrievedGpsData{" +
                 "id=" + id +
                 ", gpsDevice=" + gpsDevice +
                 ", timestamp=" + timestamp +

@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.Table;
 import pt.isel.model.clients.Client;
-import pt.isel.model.gps.GpsDevice;
+import pt.isel.model.gps.device.GpsDevice;
 
 
 import static pt.isel.dal.PersistenceManager.getEntityManager;

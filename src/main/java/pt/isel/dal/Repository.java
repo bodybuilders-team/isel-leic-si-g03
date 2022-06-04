@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import jakarta.persistence.LockModeType;
 import pt.isel.utils.GenericTypeSolver;
 
 /**
@@ -55,24 +56,37 @@ public abstract class Repository<T> {
     }
 
     /**
-     * Gets all entities.
+     * Adds the given entity to the repository.
      *
-     * @return list with all entities
+     * @param entity the entity to be added
      */
-    public List<T> getAll() {
-        return em
-                .createQuery("SELECT entity FROM " + genericType.getSimpleName() + " entity", genericType)
-                .getResultList();
+    public void add(T entity) {
+        mapper.create(entity);
     }
 
     /**
-     * Gets an entity by its id.
+     * Updates the given entity in the repository.
      *
-     * @param id the id of the entity to be read
-     * @return the entity with the given id
+     * @param entity the entity to be updated
      */
-    public Optional<T> getById(int id) {
-        return mapper.read(id);
+    public void update(T entity) {
+        mapper.update(entity);
+    }
+
+    /**
+     * Removes the given entity from the repository.
+     *
+     * @param entity the entity to be removed
+     */
+    public void remove(T entity) {
+        mapper.delete(entity);
+    }
+
+    /**
+     * Removes all entities.
+     */
+    public void removeAll() {
+        em.createQuery("DELETE FROM " + genericType.getSimpleName()).executeUpdate();
     }
 
     /**
@@ -85,15 +99,31 @@ public abstract class Repository<T> {
     public Optional<T> get(Predicate<T> predicate) {
         return em
                 .createQuery("SELECT entity FROM " + genericType.getSimpleName() + " entity", genericType)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
                 .getResultStream()
                 .filter(predicate)
                 .findFirst();
     }
 
     /**
-     * Deletes all entities.
+     * Gets all entities.
+     *
+     * @return list with all entities
      */
-    public void deleteAll() {
-        em.createQuery("DELETE FROM " + genericType.getSimpleName()).executeUpdate();
+    public List<T> getAll() {
+        return em
+                .createQuery("SELECT entity FROM " + genericType.getSimpleName() + " entity", genericType)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
+                .getResultList();
+    }
+
+    /**
+     * Gets an entity by its id.
+     *
+     * @param id the id of the entity to be read
+     * @return the entity with the given id
+     */
+    public Optional<T> getById(int id) {
+        return mapper.read(id);
     }
 }

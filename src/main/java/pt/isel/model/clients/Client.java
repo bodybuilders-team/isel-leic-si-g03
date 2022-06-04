@@ -103,6 +103,9 @@ public abstract class Client implements Serializable {
     @Column(nullable = false)
     protected Boolean active;
 
+    /**
+     * Maximum number of vehicles that a private client can own.
+     */
     public static Integer maxVehicles = 3;
 
 

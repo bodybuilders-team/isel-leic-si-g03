@@ -1,4 +1,4 @@
-package pt.isel.model.gps;
+package pt.isel.model.gps.device;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

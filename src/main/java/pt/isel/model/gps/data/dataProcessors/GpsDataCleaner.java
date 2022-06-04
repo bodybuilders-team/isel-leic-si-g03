@@ -1,20 +1,19 @@
-package pt.isel;
+package pt.isel.model.gps.data.dataProcessors;
 
 import java.util.TimerTask;
-
 
 import static pt.isel.dal.PersistenceManager.getEntityManager;
 
 /**
- * Processes the GPS data.
+ * Erases existing invalid gps data lasting longer than 15 days.
  * Can be scheduled to run periodically.
  */
-public class GpsDataProcessor extends TimerTask {
+public class GpsDataCleaner extends TimerTask {
 
     @Override
     public void run() {
         getEntityManager()
-                .createStoredProcedureQuery("process_gps_data")
+                .createStoredProcedureQuery("clear_invalid_gps_data")
                 .execute();
     }
 }

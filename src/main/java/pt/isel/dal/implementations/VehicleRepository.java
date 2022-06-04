@@ -33,7 +33,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      * associates the vehicle with that zone.
      *
      * @param v  Vehicle to be created
-     * @param gz GreenZone to be created (optional)
+     * @param gz GreenZone to be created
      */
     public void createVehicle(Vehicle v, GreenZone gz) {
         Query query = em
@@ -45,6 +45,26 @@ public class VehicleRepository extends Repository<Vehicle> {
         query.setParameter(4, v.getNumAlarms());
         query.setParameter(5, Utils.parsePoint(gz.getCenterLocation()));
         query.setParameter(6, gz.getRadius());
+
+        query.executeUpdate();
+    }
+
+    /**
+     * Creates a vehicle with the respective associated equipment information,
+     * and associates it with a customer.
+     *
+     * @param v Vehicle to be created
+     */
+    public void createVehicle(Vehicle v) {
+        Query query = em
+                .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+
+        query.setParameter(1, v.getGpsDevice().getId());
+        query.setParameter(2, v.getClient().getId());
+        query.setParameter(3, v.getLicensePlate());
+        query.setParameter(4, v.getNumAlarms());
+        query.setParameter(5, null);
+        query.setParameter(6, null);
 
         query.executeUpdate();
     }
