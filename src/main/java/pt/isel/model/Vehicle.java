@@ -39,8 +39,7 @@ public class Vehicle {
     }
 
     // Needed for JPA...
-    public Vehicle() {
-    }
+    public Vehicle() {}
 
     /**
      * The vehicle id.

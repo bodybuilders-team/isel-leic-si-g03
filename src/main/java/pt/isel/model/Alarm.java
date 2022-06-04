@@ -21,8 +21,7 @@ public class Alarm {
     }
 
     // Needed for JPA...
-    public Alarm() {
-    }
+    public Alarm() {}
 
     /**
      * The gps data associated with the alarm.

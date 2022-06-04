@@ -27,8 +27,7 @@ public class Driver {
     }
 
     // Needed for JPA...
-    public Driver() {
-    }
+    public Driver() {}
 
     /**
      * The vehicle that the driver drives.

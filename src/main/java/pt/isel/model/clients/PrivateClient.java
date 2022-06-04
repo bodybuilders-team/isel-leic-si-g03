@@ -21,14 +21,20 @@ public class PrivateClient extends Client {
      * @param active            true if the client is active, false otherwise
      * @param citizenCardNumber the client citizen card number
      */
-    public PrivateClient(String name, String phoneNumber, String nif, String address, boolean active, String citizenCardNumber) {
+    public PrivateClient(
+            String name,
+            String phoneNumber,
+            String nif,
+            String address,
+            boolean active,
+            String citizenCardNumber
+    ) {
         super(name, phoneNumber, nif, address, active);
         this.citizenCardNumber = citizenCardNumber;
     }
 
     // Needed for JPA...
-    public PrivateClient() {
-    }
+    public PrivateClient() {}
 
     /**
      * The client citizen card number.

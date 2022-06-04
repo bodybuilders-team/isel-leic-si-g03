@@ -85,12 +85,10 @@ public class VehicleRepository extends Repository<Vehicle> {
 
         // If the client is institutional or has less than 3 cars, create the vehicle and the green zone
         if (clientCarsCount < Client.maxVehicles || v.getClient() instanceof InstitutionalClient) {
-            Mapper<Vehicle> vehicleMapper = new Mapper<>(em) {
-            };
+            Mapper<Vehicle> vehicleMapper = new Mapper<>(em) {};
             vehicleMapper.create(v);
 
-            Mapper<GreenZone> greenZoneMapper = new Mapper<>(em) {
-            };
+            Mapper<GreenZone> greenZoneMapper = new Mapper<>(em) {};
             greenZoneMapper.create(gz);
         }
     }
@@ -107,8 +105,7 @@ public class VehicleRepository extends Repository<Vehicle> {
 
         // If the client is institutional or has less than 3 cars, create the vehicle and the green zone
         if (clientCarsCount < Client.maxVehicles || v.getClient() instanceof InstitutionalClient) {
-            Mapper<Vehicle> vehicleMapper = new Mapper<>(em) {
-            };
+            Mapper<Vehicle> vehicleMapper = new Mapper<>(em) {};
             vehicleMapper.create(v);
         }
     }

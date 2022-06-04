@@ -69,15 +69,7 @@ public class App {
      * Available app operations.
      */
     private enum Operation {
-        Exit,
-        CreatePrivateClient,
-        UpdatePrivateClient,
-        DeletePrivateClient,
-        DisableClient,
-        CreateVehicle,
-        GetAlarmsCount,
-        ListAlarmData,
-        InsertAlarmData
+        Exit, CreatePrivateClient, UpdatePrivateClient, DeletePrivateClient, DisableClient, CreateVehicle, GetAlarmsCount, ListAlarmData, InsertAlarmData
     }
 
     /**
@@ -154,8 +146,7 @@ public class App {
         PrivateClientRepository privateClientRepository = new PrivateClientRepository(em);
 
         String clientNif = requestString("Client NIF: ");
-        Optional<PrivateClient> privateClient =
-                privateClientRepository.get((client) -> client.getNif().equals(clientNif));
+        Optional<PrivateClient> privateClient = privateClientRepository.get((client) -> client.getNif().equals(clientNif));
 
         if (privateClient.isPresent()) {
             System.out.println("Introduce the new data for the client:");
@@ -176,8 +167,7 @@ public class App {
         PrivateClientRepository privateClientRepository = new PrivateClientRepository(em);
 
         String clientNif = requestString("Client NIF: ");
-        Optional<PrivateClient> privateClient =
-                privateClientRepository.get((client) -> client.getNif().equals(clientNif));
+        Optional<PrivateClient> privateClient = privateClientRepository.get((client) -> client.getNif().equals(clientNif));
 
         if (privateClient.isPresent())
             privateClientRepository.remove(privateClient.get());
@@ -193,8 +183,7 @@ public class App {
     private static void disableClient(EntityManager em) {
         System.out.println("\n<------------------ Disable Client ------------------>\n");
 
-        Repository<Client> clientRepository = new Repository<>(em) {
-        };
+        Repository<Client> clientRepository = new Repository<>(em) {};
 
         String clientNif = requestString("Client NIF: ");
         Optional<Client> requestedClient = clientRepository.get((client) -> client.getNif().equals(clientNif));
@@ -230,8 +219,7 @@ public class App {
         System.out.println("\n<------------------ Create Vehicle ------------------>\n");
 
         Integer gpsDeviceId = requestInteger("GPS Device ID: ");
-        Repository<GpsDevice> gpsDeviceRepository = new Repository<>(em) {
-        };
+        Repository<GpsDevice> gpsDeviceRepository = new Repository<>(em) {};
         Optional<GpsDevice> vGpsDevice = gpsDeviceRepository.get((gpsDevice) -> gpsDevice.getId().equals(gpsDeviceId));
 
         if (vGpsDevice.isEmpty()) {
@@ -240,8 +228,7 @@ public class App {
         }
 
         String clientNif = requestString("Client NIF: ");
-        Repository<Client> clientRepository = new Repository<>(em) {
-        };
+        Repository<Client> clientRepository = new Repository<>(em) {};
         Optional<Client> owner = clientRepository.get((client) -> client.getNif().equals(clientNif));
 
         if (owner.isEmpty()) {
@@ -264,8 +251,7 @@ public class App {
 
             GreenZone greenZone = new GreenZone(vehicle, centerLocation, radius);
 
-            Repository<GreenZone> greenZoneRepository = new Repository<>(em) {
-            };
+            Repository<GreenZone> greenZoneRepository = new Repository<>(em) {};
             greenZoneRepository.add(greenZone);
         }
     }
@@ -304,8 +290,7 @@ public class App {
     private static void listAlarmData(EntityManager em) {
         System.out.println("\n<------------------ List Alarm Data ------------------>\n");
 
-        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {
-        };
+        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {};
         List<AlarmData> alarmDataList = alarmDataRepository.getAll();
         alarmDataList.forEach(System.out::println);
     }
@@ -318,8 +303,7 @@ public class App {
     private static void insertAlarmData(EntityManager em) {
         System.out.println("\n<------------------ Insert Alarm Data ------------------>\n");
 
-        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {
-        };
+        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {};
 
         AlarmData alarmData = new AlarmData(); // TODO
 

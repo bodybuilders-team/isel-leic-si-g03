@@ -45,8 +45,7 @@ public abstract class Client implements Serializable {
     }
 
     // Needed for JPA...
-    public Client() {
-    }
+    public Client() {}
 
     /**
      * The client id.

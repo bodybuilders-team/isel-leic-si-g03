@@ -21,14 +21,20 @@ public class InstitutionalClient extends Client {
      * @param active      true if the client is active, false otherwise
      * @param contactName the client contact name
      */
-    public InstitutionalClient(String name, String phoneNumber, String nif, String address, boolean active, String contactName) {
+    public InstitutionalClient(
+            String name,
+            String phoneNumber,
+            String nif,
+            String address,
+            boolean active,
+            String contactName
+    ) {
         super(name, phoneNumber, nif, address, active);
         this.contactName = contactName;
     }
 
     // Needed for JPA...
-    public InstitutionalClient() {
-    }
+    public InstitutionalClient() {}
 
     /**
      * The client contact name.

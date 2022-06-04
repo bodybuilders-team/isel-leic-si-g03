@@ -30,8 +30,7 @@ public class GreenZone {
     }
 
     // Needed for JPA...
-    public GreenZone() {
-    }
+    public GreenZone() {}
 
     /**
      * The id of the green zone.

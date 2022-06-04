@@ -38,8 +38,7 @@ public class GpsData {
     }
 
     // Needed for JPA...
-    public GpsData() {
-    }
+    public GpsData() {}
 
     /**
      * The GPS data id.

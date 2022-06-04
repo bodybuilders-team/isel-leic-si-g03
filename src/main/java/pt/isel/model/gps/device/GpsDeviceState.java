@@ -24,8 +24,7 @@ public class GpsDeviceState {
     }
 
     // Needed for JPA...
-    public GpsDeviceState() {
-    }
+    public GpsDeviceState() {}
 
     /**
      * The status id.

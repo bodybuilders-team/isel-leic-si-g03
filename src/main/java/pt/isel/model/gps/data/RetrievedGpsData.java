@@ -36,8 +36,7 @@ public abstract class RetrievedGpsData {
     }
 
     // Needed for JPA...
-    public RetrievedGpsData() {
-    }
+    public RetrievedGpsData() {}
 
     /**
      * The id of the retrieved gps data.

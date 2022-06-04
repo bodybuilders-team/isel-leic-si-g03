@@ -25,8 +25,7 @@ public class GpsDevice {
     }
 
     // Needed for JPA...
-    public GpsDevice() {
-    }
+    public GpsDevice() {}
 
     /**
      * The id of the device.

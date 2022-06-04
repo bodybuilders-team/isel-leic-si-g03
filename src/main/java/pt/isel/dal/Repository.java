@@ -38,8 +38,7 @@ public abstract class Repository<T> {
     @SuppressWarnings("unchecked")
     public Repository(EntityManager em) {
         this.genericType = (Class<T>) GenericTypeSolver.getTypeArgument(getClass());
-        this.mapper = new Mapper<>(em, genericType) {
-        };
+        this.mapper = new Mapper<>(em, genericType) {};
         this.em = em;
     }
 
@@ -50,8 +49,7 @@ public abstract class Repository<T> {
      */
     public Repository(EntityManager em, Class<T> genericType) {
         this.genericType = genericType;
-        this.mapper = new Mapper<>(em, genericType) {
-        };
+        this.mapper = new Mapper<>(em, genericType) {};
         this.em = em;
     }
 
