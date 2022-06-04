@@ -35,3 +35,25 @@ CREATE TRIGGER delete_client
     ON clients
     FOR EACH ROW
 EXECUTE FUNCTION delete_client_trigger();
+
+/*
+    Trigger:        delete_private_client
+    Description:    An execution of the DELETE statement on the "private_clients" table allows
+                    deactivating the client without erasing their data.
+*/
+CREATE TRIGGER delete_private_client
+    BEFORE DELETE
+    ON private_clients
+    FOR EACH ROW
+EXECUTE FUNCTION delete_client_trigger();
+
+/*
+    Trigger:        delete_institutional_client
+    Description:    An execution of the DELETE statement on the "institutional_clients" table allows
+                    deactivating the client without erasing their data.
+*/
+CREATE TRIGGER delete_institutional_client
+    BEFORE DELETE
+    ON institutional_clients
+    FOR EACH ROW
+EXECUTE FUNCTION delete_client_trigger();

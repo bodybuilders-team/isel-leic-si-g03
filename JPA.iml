@@ -6,8 +6,9 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
+          <factory-entry name="noname-a.xml@0" value="23d6654f-381c-4477-bcdd-8a12a05b5603" />
           <factory-entry name="projetoBase" value="9597f74b-115d-4a1f-bf9e-98d3b08a80f2" />
-          <factory-entry name="si_g03" value="f0e1d34b-25bd-4a4f-9f89-533833c76adf" />
+          <factory-entry name="si_g03" value="23d6654f-381c-4477-bcdd-8a12a05b5603" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />

@@ -1,16 +1,10 @@
 package pt.isel.presentation;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import pt.isel.dal.Mapper;
+import java.util.Timer;
+import java.util.TimerTask;
+import pt.isel.GpsDataProcessor;
 import pt.isel.dal.PersistenceManager;
-import pt.isel.dal.Repository;
-import pt.isel.dal.clients.PrivateClientRepository;
-import pt.isel.model.AlarmData;
-import pt.isel.model.gps.GpsData;
-import pt.isel.model.clients.InstitutionalClient;
+import pt.isel.dal.implementations.clients.PrivateClientRepository;
 import pt.isel.model.clients.PrivateClient;
 
 
@@ -27,10 +21,30 @@ public class App {
      * Application entry point.
      */
     public static void main(String[] args) {
+        Timer processGpsDataTimer = new Timer("Process GPS Data");
+        TimerTask processGpsDataTask = new GpsDataProcessor();
+        processGpsDataTimer.schedule(processGpsDataTask, 0, 5*60*1000);
 
-        Repository<AlarmData> ad = new Repository<>() {
-        };
+        PersistenceManager.execute((em) -> {
+            PrivateClientRepository privateClientRepository = new PrivateClientRepository(em);
 
-        ad.getAll().forEach(System.out::println);
+            privateClientRepository.deleteAll();
+
+            PrivateClient privateClient = new PrivateClient(
+                    "Joao",
+                    "91234",
+                    "123456789",
+                    "Rua da casa",
+                    true,
+                    "123456789"
+            );
+
+            privateClientRepository.add(privateClient);
+
+            PrivateClient client = privateClientRepository.getByName("Joao").get();
+
+        });
+
+
     }
 }

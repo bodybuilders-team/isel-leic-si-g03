@@ -33,8 +33,8 @@ $$
 DECLARE
     client_id INTEGER;
 BEGIN
-    INSERT INTO clients(name, phone_number, nif, address, active, referral)
-    VALUES (client_name, client_phone_number, client_nif, client_address, true, client_referee)
+    INSERT INTO clients(name, dtype, phone_number, nif, address, active, referral)
+    VALUES (client_name, 'PrivateClient', client_phone_number, client_nif, client_address, true, client_referee)
     RETURNING id INTO client_id;
 
     INSERT INTO private_clients (id, citizen_card_number)

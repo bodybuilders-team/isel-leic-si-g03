@@ -1,5 +1,6 @@
 package pt.isel.model.clients;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,9 +10,11 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import java.io.Serializable;
+import java.util.List;
+import pt.isel.model.Vehicle;
 
 
 /**
@@ -56,6 +59,11 @@ public abstract class Client implements Serializable {
     @ManyToOne
     @JoinColumn(name = "referral")
     protected Client referral;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Vehicle> vehicles;
+
+    private String dtype;
 
     /**
      * The client name.
@@ -212,5 +220,14 @@ public abstract class Client implements Serializable {
      */
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+        vehicles.add(vehicle);
+        vehicle.setClient(this);
     }
 }

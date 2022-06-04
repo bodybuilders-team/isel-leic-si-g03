@@ -8,6 +8,7 @@ import jakarta.persistence.Persistence;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 /**
  * Represents a persistence manager.
@@ -97,16 +98,17 @@ public class PersistenceManager {
     /**
      * Executes a transaction, given a runnable.
      *
-     * @param runnable the runnable to be executed
+     * @param consumer the runnable to be executed
      */
-    public static void execute(Runnable runnable) {
+    public static void execute(Consumer<EntityManager> consumer) {
         EntityManager em = getEntityManager();
+        //Create entity manager factory per thread
         EntityTransaction tx = em.getTransaction();
 
         try {
             tx.begin();
 
-            runnable.run();
+            consumer.accept(em);
 
             tx.commit();
         } catch (Exception e) {
@@ -116,6 +118,7 @@ public class PersistenceManager {
             throw e;
         } finally {
             PersistenceManager.closeEntityManager();
+            PersistenceManager.closeEntityManagerFactory();
         }
     }
 }

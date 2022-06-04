@@ -1,18 +1,28 @@
-package pt.isel.dal;
+package pt.isel.dal.implementations;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
 import pt.isel.Utils;
+import pt.isel.dal.Repository;
 import pt.isel.model.GreenZone;
 import pt.isel.model.Vehicle;
-import pt.isel.model.clients.PrivateClient;
+
 
 import static pt.isel.dal.PersistenceManager.getEntityManager;
 
 /**
  * Repository for Vehicle.
  */
-public class VehicleRepository extends Repository<PrivateClient> {
+public class VehicleRepository extends Repository<Vehicle> {
+
+    public VehicleRepository(EntityManager em) {
+        super(em);
+    }
+
+    public VehicleRepository(EntityManager em, Class<Vehicle> genericType) {
+        super(em, genericType);
+    }
 
     /**
      * Creates a vehicle with the respective associated equipment information,
@@ -37,5 +47,15 @@ public class VehicleRepository extends Repository<PrivateClient> {
         query.setParameter(6, gz.getRadius());
 
         query.executeUpdate();
+    }
+
+
+    public int getAlarmsCount(int year) {
+        StoredProcedureQuery query = getEntityManager().createStoredProcedureQuery("get_alarms_count");
+        query.registerStoredProcedureParameter(1, Integer.class, jakarta.persistence.ParameterMode.IN);
+
+        query.setParameter(1, year);
+
+        return (int) query.getSingleResult();
     }
 }

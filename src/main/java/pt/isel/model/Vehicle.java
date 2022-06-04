@@ -8,9 +8,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.Table;
 import pt.isel.model.clients.Client;
 import pt.isel.model.gps.GpsDevice;
+
+
+import static pt.isel.dal.PersistenceManager.getEntityManager;
 
 /**
  * Vehicle entity.
@@ -52,6 +56,16 @@ public class Vehicle {
     @Column(name = "num_alarms", nullable = false)
     private Integer numAlarms;
 
+    public int getAlarmsCount(int year) {
+        StoredProcedureQuery query = getEntityManager().createStoredProcedureQuery("get_alarms_count");
+        query.registerStoredProcedureParameter(1, Integer.class, jakarta.persistence.ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, String.class, jakarta.persistence.ParameterMode.IN);
+
+        query.setParameter(1, year);
+        query.setParameter(2, licensePlate);
+
+        return (int) query.getSingleResult();
+    }
 
     /**
      * Gets the vehicle id.

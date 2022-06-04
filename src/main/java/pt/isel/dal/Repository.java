@@ -1,13 +1,10 @@
 package pt.isel.dal;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import pt.isel.GenericTypeSolver;
-
-
-import static pt.isel.dal.PersistenceManager.getEntityManager;
 
 /**
  * Represents a repository for a specific entity.
@@ -27,15 +24,17 @@ public abstract class Repository<T> {
      */
     private final Mapper<T> mapper;
 
+    private final EntityManager em;
 
     /**
      * Creates a new repository for the specified entity type.
      */
     @SuppressWarnings("unchecked")
-    public Repository() {
+    public Repository(EntityManager em) {
         this.genericType = (Class<T>) GenericTypeSolver.getTypeArgument(getClass());
-        this.mapper = new Mapper<>(genericType) {
+        this.mapper = new Mapper<>(em, genericType) {
         };
+        this.em = em;
     }
 
     /**
@@ -43,10 +42,11 @@ public abstract class Repository<T> {
      *
      * @param genericType the generic type of the entity
      */
-    public Repository(Class<T> genericType) {
+    public Repository(EntityManager em, Class<T> genericType) {
         this.genericType = genericType;
-        this.mapper = new Mapper<>(genericType) {
+        this.mapper = new Mapper<>(em, genericType) {
         };
+        this.em = em;
     }
 
     /**
@@ -55,7 +55,7 @@ public abstract class Repository<T> {
      * @return list with all entities
      */
     public List<T> getAll() {
-        return getEntityManager()
+        return em
                 .createQuery("SELECT entity FROM " + genericType.getSimpleName() + " entity", genericType)
                 .getResultList();
     }
@@ -66,7 +66,7 @@ public abstract class Repository<T> {
      * @param id the id of the entity to be read
      * @return the entity with the given id
      */
-    public T getById(int id) {
+    public Optional<T> getById(int id) {
         return mapper.read(id);
     }
 
@@ -78,7 +78,7 @@ public abstract class Repository<T> {
      * or an empty optional if no entity matches
      */
     public Optional<T> get(Predicate<T> predicate) {
-        return getEntityManager()
+        return em
                 .createQuery("SELECT entity FROM " + genericType.getSimpleName() + " entity", genericType)
                 .getResultStream()
                 .filter(predicate)
@@ -89,7 +89,7 @@ public abstract class Repository<T> {
      * Deletes all entities.
      */
     public void deleteAll() {
-        getEntityManager()
+        em
                 .createQuery("DELETE FROM " + genericType.getSimpleName()).executeUpdate();
     }
 }
