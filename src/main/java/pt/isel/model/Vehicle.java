@@ -24,6 +24,25 @@ import static pt.isel.dal.PersistenceManager.getEntityManager;
 public class Vehicle {
 
     /**
+     * Creates a new instance of Vehicle.
+     *
+     * @param gpsDevice    the gps device
+     * @param client       the client
+     * @param licensePlate the license plate
+     * @param numAlarms    the num alarms
+     */
+    public Vehicle(GpsDevice gpsDevice, Client client, String licensePlate, Integer numAlarms) {
+        this.gpsDevice = gpsDevice;
+        this.client = client;
+        this.licensePlate = licensePlate;
+        this.numAlarms = numAlarms;
+    }
+
+    // Needed for JPA...
+    public Vehicle() {
+    }
+
+    /**
      * The vehicle id.
      */
     @Id
@@ -56,16 +75,6 @@ public class Vehicle {
     @Column(name = "num_alarms", nullable = false)
     private Integer numAlarms;
 
-    public int getAlarmsCount(int year) {
-        StoredProcedureQuery query = getEntityManager().createStoredProcedureQuery("get_alarms_count");
-        query.registerStoredProcedureParameter(1, Integer.class, jakarta.persistence.ParameterMode.IN);
-        query.registerStoredProcedureParameter(2, String.class, jakarta.persistence.ParameterMode.IN);
-
-        query.setParameter(1, year);
-        query.setParameter(2, licensePlate);
-
-        return (int) query.getSingleResult();
-    }
 
     /**
      * Gets the vehicle id.
@@ -155,5 +164,33 @@ public class Vehicle {
      */
     public void setNumAlarms(Integer numAlarms) {
         this.numAlarms = numAlarms;
+    }
+
+    /**
+     * Returns the total number of alarms for a given year and vehicle.
+     *
+     * @param year the year
+     * @return the total number of alarms for a given year and vehicle
+     */
+    public int getAlarmsCount(int year) {
+        StoredProcedureQuery query = getEntityManager().createStoredProcedureQuery("get_alarms_count");
+        query.registerStoredProcedureParameter(1, Integer.class, jakarta.persistence.ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, String.class, jakarta.persistence.ParameterMode.IN);
+
+        query.setParameter(1, year);
+        query.setParameter(2, licensePlate);
+
+        return (int) query.getSingleResult();
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id=" + id +
+                ", gpsDevice=" + gpsDevice +
+                ", client=" + client +
+                ", licensePlate='" + licensePlate + '\'' +
+                ", numAlarms=" + numAlarms +
+                '}';
     }
 }

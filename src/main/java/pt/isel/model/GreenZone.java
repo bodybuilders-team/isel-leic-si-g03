@@ -17,6 +17,23 @@ import jakarta.persistence.Table;
 public class GreenZone {
 
     /**
+     * Creates a new instance of GreenZone.
+     *
+     * @param vehicle        the vehicle
+     * @param centerLocation the center location
+     * @param radius         the radius
+     */
+    public GreenZone(Vehicle vehicle, String centerLocation, Double radius) {
+        this.vehicle = vehicle;
+        this.centerLocation = centerLocation;
+        this.radius = radius;
+    }
+
+    // Needed for JPA...
+    public GreenZone() {
+    }
+
+    /**
      * The id of the green zone.
      */
     @Id
@@ -113,5 +130,15 @@ public class GreenZone {
      */
     public void setRadius(Double radius) {
         this.radius = radius;
+    }
+
+    @Override
+    public String toString() {
+        return "GreenZone{" +
+                "id=" + id +
+                ", vehicle=" + vehicle +
+                ", centerLocation='" + centerLocation + '\'' +
+                ", radius=" + radius +
+                '}';
     }
 }

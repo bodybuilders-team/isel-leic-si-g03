@@ -2,13 +2,13 @@ package pt.isel.dal.implementations.clients;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+
 import java.util.Optional;
+
 import pt.isel.dal.Repository;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;
 
-
-import static pt.isel.dal.PersistenceManager.getEntityManager;
 
 /**
  * Repository for PrivateClient.
@@ -30,17 +30,20 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
      * @return the PrivateClient with the given name
      */
     public Optional<PrivateClient> getByName(String name) {
-        return getEntityManager()
+        return em
                 .createQuery("SELECT pc FROM PrivateClient pc WHERE pc.name = :name", PrivateClient.class)
                 .setParameter("name", name)
                 .getResultStream()
                 .findFirst();
     }
 
+    /**
+     * Inserts the given PrivateClient.
+     *
+     * @param client the PrivateClient to be inserted
+     */
     public void add(PrivateClient client) {
-        EntityManager manager = getEntityManager();
-        Query query = manager.createNativeQuery(
-                "CALL insert_private_client(?,?,?,?::CHAR,?,?::INTEGER)");
+        Query query = em.createNativeQuery("CALL insert_private_client(?,?,?,?::CHAR,?,?::INTEGER)");
 
         query.setParameter(1, client.getCitizenCardNumber());
         query.setParameter(2, client.getName());
@@ -55,19 +58,25 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
         query.executeUpdate();
     }
 
+    /**
+     * Removes the given PrivateClient.
+     *
+     * @param client the PrivateClient to be removed
+     */
     public void remove(PrivateClient client) {
-        EntityManager manager = getEntityManager();
-        Query query = manager.createNativeQuery(
-                "CALL remove_private_client(?::INTEGER)");
+        Query query = em.createNativeQuery("CALL remove_private_client(?::INTEGER)");
 
         query.setParameter(1, client.getId());
         query.executeUpdate();
     }
 
+    /**
+     * Updates the given PrivateClient.
+     *
+     * @param client the PrivateClient to be updated
+     */
     public void update(PrivateClient client) {
-        EntityManager manager = getEntityManager();
-        Query query = manager.createNativeQuery(
-                "CALL update_private_client(?::INTEGER,?,?::CHAR,?,?,?::INTEGER)");
+        Query query = em.createNativeQuery("CALL update_private_client(?::INTEGER,?,?::CHAR,?,?,?::INTEGER)");
 
         query.setParameter(1, client.getId());
         query.setParameter(2, client.getCitizenCardNumber());
@@ -81,5 +90,4 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
 
         query.executeUpdate();
     }
-
 }

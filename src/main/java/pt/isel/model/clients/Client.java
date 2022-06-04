@@ -12,8 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.io.Serializable;
 import java.util.List;
+
 import pt.isel.model.Vehicle;
 
 
@@ -60,9 +62,15 @@ public abstract class Client implements Serializable {
     @JoinColumn(name = "referral")
     protected Client referral;
 
+    /**
+     * List of vehicles owned by the client.
+     */
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Vehicle> vehicles;
 
+    /**
+     * Client data type.
+     */
     private String dtype;
 
     /**
@@ -94,6 +102,8 @@ public abstract class Client implements Serializable {
      */
     @Column(nullable = false)
     protected Boolean active;
+
+    public static Integer maxVehicles = 3;
 
 
     /**
@@ -222,10 +232,20 @@ public abstract class Client implements Serializable {
         this.active = active;
     }
 
+    /**
+     * Gets the list of vehicles owned by the client.
+     *
+     * @return the list of vehicles owned by the client
+     */
     public List<Vehicle> getVehicles() {
         return vehicles;
     }
 
+    /**
+     * Adds a vehicle to the client list of vehicles.
+     *
+     * @param vehicle the vehicle to be added
+     */
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
         vehicle.setClient(this);

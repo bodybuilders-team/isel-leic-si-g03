@@ -15,6 +15,15 @@ import pt.isel.model.gps.GpsData;
 @Table(name = "alarms")
 public class Alarm {
 
+    public Alarm(GpsData gpsData, String driverName) {
+        this.gpsData = gpsData;
+        this.driverName = driverName;
+    }
+
+    // Needed for JPA...
+    public Alarm() {
+    }
+
     /**
      * The gps data associated with the alarm.
      */
@@ -64,5 +73,13 @@ public class Alarm {
      */
     public void setDriverName(String driverName) {
         this.driverName = driverName;
+    }
+
+    @Override
+    public String toString() {
+        return "Alarm{" +
+                "gpsData=" + gpsData +
+                ", driverName='" + driverName + '\'' +
+                '}';
     }
 }

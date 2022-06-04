@@ -14,7 +14,7 @@ import jakarta.persistence.TemporalType;
 import java.awt.geom.Point2D;
 import java.util.Date;
 
-import pt.isel.Utils;
+import pt.isel.utils.Utils;
 
 /**
  * GPSData entity.
@@ -22,6 +22,23 @@ import pt.isel.Utils;
 @Entity
 @Table(name = "gps_data")
 public class GpsData {
+
+    /**
+     * Creates a new instance of GPSData.
+     *
+     * @param gpsDevice the gps device
+     * @param timestamp the timestamp
+     * @param location  the location
+     */
+    public GpsData(GpsDevice gpsDevice, Date timestamp, String location) {
+        this.gpsDevice = gpsDevice;
+        this.timestamp = timestamp;
+        this.location = location;
+    }
+
+    // Needed for JPA...
+    public GpsData() {
+    }
 
     /**
      * The GPS data id.
@@ -124,13 +141,13 @@ public class GpsData {
         this.location = Utils.pointToString(location);
     }
 
-
+    @Override
     public String toString() {
         return "GpsData{" +
                 "id=" + id +
                 ", gpsDevice=" + gpsDevice +
                 ", timestamp=" + timestamp +
-                ", location=" + location +
+                ", location='" + location + '\'' +
                 '}';
     }
 }

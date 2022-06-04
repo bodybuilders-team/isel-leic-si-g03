@@ -15,6 +15,19 @@ import jakarta.persistence.Table;
 public class GpsDeviceState {
 
     /**
+     * Creates a new instance of GpsDeviceState.
+     *
+     * @param status the status
+     */
+    public GpsDeviceState(String status) {
+        this.status = status;
+    }
+
+    // Needed for JPA...
+    public GpsDeviceState() {
+    }
+
+    /**
      * The status id.
      */
     @Id

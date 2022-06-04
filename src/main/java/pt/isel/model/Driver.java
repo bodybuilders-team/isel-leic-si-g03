@@ -14,6 +14,23 @@ import jakarta.persistence.Table;
 public class Driver {
 
     /**
+     * Creates a new instance of Driver.
+     *
+     * @param vehicle     the vehicle
+     * @param name        the name
+     * @param phoneNumber the phone number
+     */
+    public Driver(Vehicle vehicle, String name, String phoneNumber) {
+        this.vehicle = vehicle;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
+    // Needed for JPA...
+    public Driver() {
+    }
+
+    /**
      * The vehicle that the driver drives.
      */
     @Id
@@ -85,5 +102,14 @@ public class Driver {
      */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "vehicle=" + vehicle +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
     }
 }

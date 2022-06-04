@@ -1,7 +1,10 @@
-package pt.isel;
+package pt.isel.utils;
 
 import java.awt.geom.Point2D;
 
+/**
+ * Utility class for the project.
+ */
 public class Utils {
 
     /**

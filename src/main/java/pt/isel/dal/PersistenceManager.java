@@ -102,7 +102,8 @@ public class PersistenceManager {
      */
     public static void execute(Consumer<EntityManager> consumer) {
         EntityManager em = getEntityManager();
-        //Create entity manager factory per thread
+
+        // Create entity manager factory per thread
         EntityTransaction tx = em.getTransaction();
 
         try {

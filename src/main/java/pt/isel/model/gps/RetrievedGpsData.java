@@ -13,13 +13,30 @@ import jakarta.persistence.TemporalType;
 import java.awt.geom.Point2D;
 import java.util.Date;
 
-import pt.isel.Utils;
+import pt.isel.utils.Utils;
 
 /**
  * RetrievedGpsData entity.
  */
 @MappedSuperclass
 public abstract class RetrievedGpsData {
+
+    /**
+     * Creates a new instance of RetrievedGpsData.
+     *
+     * @param gpsDevice the gps device
+     * @param timestamp the timestamp
+     * @param location  the location
+     */
+    public RetrievedGpsData(GpsDevice gpsDevice, Date timestamp, String location) {
+        this.gpsDevice = gpsDevice;
+        this.timestamp = timestamp;
+        this.location = location;
+    }
+
+    // Needed for JPA...
+    public RetrievedGpsData() {
+    }
 
     /**
      * The id of the retrieved gps data.
@@ -42,6 +59,9 @@ public abstract class RetrievedGpsData {
     @Temporal(TemporalType.TIMESTAMP)
     protected Date timestamp;
 
+    /**
+     * Location of the gps data.
+     */
     @Column(nullable = false, columnDefinition = "POINT")
     protected String location;
 
@@ -117,5 +137,15 @@ public abstract class RetrievedGpsData {
      */
     public void setLocation(Point2D.Float location) {
         this.location = Utils.pointToString(location);
+    }
+
+    @Override
+    public String toString() {
+        return "RetrievedGpsData{" +
+                "id=" + id +
+                ", gpsDevice=" + gpsDevice +
+                ", timestamp=" + timestamp +
+                ", location='" + location + '\'' +
+                '}';
     }
 }

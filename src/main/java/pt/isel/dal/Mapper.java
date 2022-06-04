@@ -1,8 +1,10 @@
 package pt.isel.dal;
 
 import jakarta.persistence.EntityManager;
+
 import java.util.Optional;
-import pt.isel.GenericTypeSolver;
+
+import pt.isel.utils.GenericTypeSolver;
 
 /**
  * Represents a mapper for a specific entity.
@@ -17,6 +19,9 @@ public abstract class Mapper<T> {
      */
     private final Class<T> genericType;
 
+    /**
+     * Entity manager of the entity.
+     */
     private final EntityManager em;
 
     /**

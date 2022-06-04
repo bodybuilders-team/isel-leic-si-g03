@@ -3,8 +3,6 @@ package pt.isel.model.clients;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.eclipse.persistence.annotations.CascadeOnDelete;
-import org.eclipse.persistence.annotations.DeleteAll;
 
 /**
  * Private client entity.

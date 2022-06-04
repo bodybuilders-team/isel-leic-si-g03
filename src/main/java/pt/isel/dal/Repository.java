@@ -1,10 +1,12 @@
 package pt.isel.dal;
 
 import jakarta.persistence.EntityManager;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import pt.isel.GenericTypeSolver;
+
+import pt.isel.utils.GenericTypeSolver;
 
 /**
  * Represents a repository for a specific entity.
@@ -22,9 +24,12 @@ public abstract class Repository<T> {
     /**
      * Mapper for the entity.
      */
-    private final Mapper<T> mapper;
+    protected final Mapper<T> mapper;
 
-    private final EntityManager em;
+    /**
+     * Entity manager.
+     */
+    protected final EntityManager em;
 
     /**
      * Creates a new repository for the specified entity type.
@@ -89,7 +94,6 @@ public abstract class Repository<T> {
      * Deletes all entities.
      */
     public void deleteAll() {
-        em
-                .createQuery("DELETE FROM " + genericType.getSimpleName()).executeUpdate();
+        em.createQuery("DELETE FROM " + genericType.getSimpleName()).executeUpdate();
     }
 }
