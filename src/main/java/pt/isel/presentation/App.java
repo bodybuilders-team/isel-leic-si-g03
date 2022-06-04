@@ -1,18 +1,25 @@
 package pt.isel.presentation;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import jakarta.persistence.EntityManager;
 import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.Repository;
+import pt.isel.dal.implementations.VehicleRepository;
 import pt.isel.dal.implementations.clients.PrivateClientRepository;
+import pt.isel.model.AlarmData;
+import pt.isel.model.GreenZone;
+import pt.isel.model.Vehicle;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;
-import pt.isel.model.gps.data.dataProcessors.GpsDataCleaner;
-import pt.isel.model.gps.data.dataProcessors.GpsDataProcessor;
+import pt.isel.model.gps.device.GpsDevice;
+
+import static pt.isel.utils.ConsoleUI.requestBoolean;
+import static pt.isel.utils.ConsoleUI.requestDouble;
+import static pt.isel.utils.ConsoleUI.requestInteger;
+import static pt.isel.utils.ConsoleUI.requestString;
 
 
 /**
@@ -28,28 +35,30 @@ public class App {
      * Application entry point.
      */
     public static void main(String[] args) {
-        Timer processGpsDataTimer = new Timer("Process GPS Data");
+        /*Timer processGpsDataTimer = new Timer("Process GPS Data");
         TimerTask processGpsDataTask = new GpsDataProcessor();
         processGpsDataTimer.schedule(processGpsDataTask, 0, 5 * 60 * 1000); // TODO: Magic constants?
 
         Timer cleanGpsDataTimer = new Timer("Clean Invalid GPS Data");
         TimerTask cleanGpsDataTask = new GpsDataCleaner();
-        cleanGpsDataTimer.schedule(cleanGpsDataTask, 0, 5 * 60 * 1000); // TODO: Magic constants?
+        cleanGpsDataTimer.schedule(cleanGpsDataTask, 0, 5 * 60 * 1000); // TODO: Magic constants?*/
+
+        // TODO: 04/06/2022 Maybe execute scripts to add routines to the database?
 
         // App main loop
         do {
             Operation userInput = displayMenu();
-            if (userInput == Operation.Exit)
+            if (userInput == Operation.Exit) {
+                System.out.println("Exiting...");
                 break;
+            }
 
             if (userInput != null) {
-                PersistenceManager.execute((em) -> {
-                    executeOperation(userInput, em);
-                });
+                PersistenceManager.execute((em) -> executeOperation(userInput, em));
             } else
                 System.out.println("Invalid Operation.");
 
-            System.out.println("Press ENTER to continue...");
+            System.out.print("\nPress ENTER to continue...");
             Scanner scanner = new Scanner(System.in);
             scanner.nextLine();
 
@@ -88,8 +97,7 @@ public class App {
         System.out.println(" 7. Get Alarms Count");
         System.out.println(" 8. List Alarm Data");
         System.out.println(" 9. Insert Alarm Data");
-        System.out.println("\n<------------------------------------------------------->\n");
-        System.out.print("> ");
+        System.out.print("\n> ");
 
         // Get user input
         Scanner scanner = new Scanner(System.in);
@@ -122,7 +130,7 @@ public class App {
     }
 
     /**
-     * Creates a new private client.
+     * Requests the user to enter client information, and creates it
      *
      * @param em entity manager
      */
@@ -135,7 +143,8 @@ public class App {
     }
 
     /**
-     * Updates an existing private client.
+     * Requests the user to enter a client NIF and, if a client with that NIF exists, updates it,
+     * requesting the user for new data.
      *
      * @param em entity manager
      */
@@ -157,7 +166,7 @@ public class App {
     }
 
     /**
-     * Deletes an existing private client.
+     * Requests the user to enter a client NIF and, if a client with that NIF exists, deletes it.
      *
      * @param em entity manager
      */
@@ -177,7 +186,7 @@ public class App {
     }
 
     /**
-     * Disables an existing client.
+     * Requests the user to enter a client NIF and, if a client with that NIF exists, desactivates it.
      *
      * @param em entity manager
      */
@@ -212,99 +221,108 @@ public class App {
         return new PrivateClient(name, phoneNumber, nif, address, active, citizenCardNumber);
     }
 
+    /**
+     * Requests the user to insert the data for a new vehicle and, optionally, for a new green zone.
+     *
+     * @param em entity manager
+     */
     private static void createVehicle(EntityManager em) {
         System.out.println("\n<------------------ Create Vehicle ------------------>\n");
-        Vehicle vehicle = requestVehicle();
+
+        Integer gpsDeviceId = requestInteger("GPS Device ID: ");
+        Repository<GpsDevice> gpsDeviceRepository = new Repository<>(em) {
+        };
+        Optional<GpsDevice> vGpsDevice = gpsDeviceRepository.get((gpsDevice) -> gpsDevice.getId().equals(gpsDeviceId));
+
+        if (vGpsDevice.isEmpty()) {
+            System.out.println("GPS Device not found.");
+            return;
+        }
+
+        String clientNif = requestString("Client NIF: ");
+        Repository<Client> clientRepository = new Repository<>(em) {
+        };
+        Optional<Client> owner = clientRepository.get((client) -> client.getNif().equals(clientNif));
+
+        if (owner.isEmpty()) {
+            System.out.println("Client not found.");
+            return;
+        }
+
+        String licensePlate = requestString("License Plate: ");
+        Integer numAlarms = requestInteger("Number of alarms: ");
+
+
+        Vehicle vehicle = new Vehicle(vGpsDevice.get(), owner.get(), licensePlate, numAlarms);
 
         VehicleRepository vehicleRepository = new VehicleRepository(em);
         vehicleRepository.add(vehicle);
+
+        if (requestBoolean("Create green zone?(true/false): ")) {
+            String centerLocation = requestString("Center Location: ");
+            Double radius = requestDouble("Radius: ");
+
+            GreenZone greenZone = new GreenZone(vehicle, centerLocation, radius);
+
+            Repository<GreenZone> greenZoneRepository = new Repository<>(em) {
+            };
+            greenZoneRepository.add(greenZone);
+        }
     }
 
+    /**
+     * Requests the user to insert the year of the alarms and, optionally, the license plate of a vehicle,
+     * and prints the total number of alarms for that vehicle in that year.
+     * <p>
+     * If no license plate is provided, the method prints the total number of alarms for all vehicles in that year.
+     *
+     * @param em entity manager
+     */
     private static void getAlarmsCount(EntityManager em) {
         System.out.println("\n<------------------ Get Alarms Count ------------------>\n");
 
+        int year = requestInteger("Year: ");
+        String licensePlate = requestString("License Plate: ");
+
         VehicleRepository vehicleRepository = new VehicleRepository(em);
-
-        String vehiclePlate = requestString("Vehicle Plate: ");
-        Optional<Vehicle> vehicle =
-                vehicleRepository.get((vehicle1) -> vehicle1.getPlate().equals(vehiclePlate));
-
-        if (vehicle.isPresent()) {
-            System.out.println("Alarms count: " + vehicle.get().getAlarms().size());
-        } else
-            System.out.println("Vehicle not found.");
+        if (licensePlate == null || licensePlate.isEmpty())
+            System.out.println("Total number of alarms:" + vehicleRepository.getAlarmsCount(year));
+        else {
+            Optional<Vehicle> vehicle = vehicleRepository.get((v) -> v.getLicensePlate().equals(licensePlate));
+            if (vehicle.isPresent())
+                System.out.println("Total number of alarms:" + vehicle.get().getAlarmsCount(year));
+            else
+                System.out.println("Vehicle not found.");
+        }
     }
 
+    /**
+     * Lists the alarms' data.
+     *
+     * @param em entity manager
+     */
     private static void listAlarmData(EntityManager em) {
-        System.out.println("\n<------------------ List Alarms ------------------>\n");
+        System.out.println("\n<------------------ List Alarm Data ------------------>\n");
 
-        VehicleRepository vehicleRepository = new VehicleRepository(em);
-
-        String vehiclePlate = requestString("Vehicle Plate: ");
-        Optional<Vehicle> vehicle =
-                vehicleRepository.get((vehicle1) -> vehicle1.getPlate().equals(vehiclePlate));
-
-        if (vehicle.isPresent()) {
-            System.out.println("Alarms: ");
-            for (Alarm alarm : vehicle.get().getAlarms()) {
-                System.out.println("\t" + alarm.getId() + " - " + alarm.getDate());
-            }
-        } else
-            System.out.println("Vehicle not found.");
+        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {
+        };
+        List<AlarmData> alarmDataList = alarmDataRepository.getAll();
+        alarmDataList.forEach(System.out::println);
     }
 
+    /**
+     * Requests the user to insert new alarm data.
+     *
+     * @param em entity manager
+     */
     private static void insertAlarmData(EntityManager em) {
-        System.out.println("\n<------------------ Insert Alarm ------------------>\n");
+        System.out.println("\n<------------------ Insert Alarm Data ------------------>\n");
 
-        VehicleRepository vehicleRepository = new VehicleRepository(em);
+        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {
+        };
 
-        String vehiclePlate = requestString("Vehicle Plate: ");
-        Optional<Vehicle> vehicle =
-                vehicleRepository.get((vehicle1) -> vehicle1.getPlate().equals(vehiclePlate));
+        AlarmData alarmData = new AlarmData(); // TODO
 
-        if (vehicle.isPresent()) {
-            Alarm alarm = new Alarm();
-            alarm.setDate(new Date());
-            alarm.setVehicle(vehicle.get());
-            vehicle.get().getAlarms().add(alarm);
-            vehicleRepository.update(vehicle.get());
-        } else
-            System.out.println("Vehicle not found.");
-    }
-
-    /**
-     * Requests the user to insert an Integer value and returns it.
-     *
-     * @param message message to display
-     * @return user input
-     */
-    private static Integer requestInteger(String message) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(message);
-        return scanner.nextInt();
-    }
-
-    /**
-     * Requests the user to insert a String value and returns it.
-     *
-     * @param message message to display
-     * @return user input
-     */
-    private static String requestString(String message) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(message);
-        return scanner.nextLine();
-    }
-
-    /**
-     * Requests the user to insert a Boolean value and returns it.
-     *
-     * @param message message to display
-     * @return user input
-     */
-    private static Boolean requestBoolean(String message) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(message);
-        return scanner.nextBoolean();
+        alarmDataRepository.add(alarmData);
     }
 }

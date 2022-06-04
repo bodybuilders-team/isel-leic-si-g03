@@ -1,6 +1,7 @@
-TODO: Solve problem with Mapper instatiation
 TODO: Exercise 2 - Optimistic locking
 TODO: Update data models
 TODO: Review annotations @OneToMany, @ManyToOne, @OneToOne
 TODO: Add unit tests
 TODO: Console application
+TODO: Add more data to insertData()
+TODO: Client NIF and Vehicle Plate should be unique
