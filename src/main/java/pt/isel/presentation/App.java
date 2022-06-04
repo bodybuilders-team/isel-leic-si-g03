@@ -53,9 +53,9 @@ public class App {
                 break;
             }
 
-            if (userInput != null) {
+            if (userInput != null)
                 PersistenceManager.execute((em) -> executeOperation(userInput, em));
-            } else
+            else
                 System.out.println("Invalid Operation.");
 
             System.out.print("\nPress ENTER to continue...");
@@ -69,7 +69,15 @@ public class App {
      * Available app operations.
      */
     private enum Operation {
-        Exit, CreatePrivateClient, UpdatePrivateClient, DeletePrivateClient, DisableClient, CreateVehicle, GetAlarmsCount, ListAlarmData, InsertAlarmData
+        Exit,
+        CreatePrivateClient,
+        UpdatePrivateClient,
+        DeletePrivateClient,
+        DisableClient,
+        CreateVehicle,
+        GetAlarmsCount,
+        ListAlarmData,
+        InsertAlarmData
     }
 
     /**

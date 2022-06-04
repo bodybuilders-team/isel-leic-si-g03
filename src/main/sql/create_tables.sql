@@ -5,19 +5,19 @@ CALL delete_tables();
 CREATE TABLE clients
 (
     id           SERIAL PRIMARY KEY,
-    dtype        VARCHAR(50)  NOT NULL,
-    referral     INT          NULL REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name         VARCHAR(60)  NOT NULL,
-    phone_number VARCHAR(20)  NOT NULL,
-    nif          CHAR(9)      NOT NULL,
-    address      VARCHAR(200) NOT NULL,
-    active       BOOLEAN      NOT NULL
+    dtype        VARCHAR(50)    NOT NULL CHECK (dtype IN ('PrivateClient', 'InstitutionalClient')),
+    referral     INT            NULL REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    name         VARCHAR(60)    NOT NULL,
+    phone_number VARCHAR(20)    NOT NULL,
+    nif          CHAR(9) UNIQUE NOT NULL,
+    address      VARCHAR(200)   NOT NULL,
+    active       BOOLEAN        NOT NULL
 );
 
 CREATE TABLE private_clients
 (
     id                  INT PRIMARY KEY REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    citizen_card_number VARCHAR(15) NOT NULL
+    citizen_card_number VARCHAR(15) UNIQUE NOT NULL
 );
 
 CREATE TABLE institutional_clients
@@ -49,10 +49,10 @@ CREATE TABLE gps_data
 CREATE TABLE vehicles
 (
     id            SERIAL PRIMARY KEY,
-    gps_device_id INT         NOT NULL UNIQUE REFERENCES gps_devices (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    client_id     INT         NOT NULL REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    license_plate VARCHAR(10) NOT NULL,
-    num_alarms    INT         NOT NULL CHECK (num_alarms >= 0)
+    gps_device_id INT                NOT NULL UNIQUE REFERENCES gps_devices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    client_id     INT                NOT NULL REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    license_plate VARCHAR(10) UNIQUE NOT NULL,
+    num_alarms    INT                NOT NULL CHECK (num_alarms >= 0)
 );
 
 CREATE TABLE green_zones

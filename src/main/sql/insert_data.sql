@@ -8,16 +8,31 @@ BEGIN
     INSERT INTO clients(name, dtype, phone_number, nif, address, active)
     VALUES ('André Páscoa', 'PrivateClient', '962249051', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
             true),
-           ('BE Fit', 'InstitutionalClient', '1234', '123456789', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
-            true);
+           ('BE Fit', 'InstitutionalClient', '1234', '299114480', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true),
+           ('André Jesus', 'InstitutionalClient', '1234', '243496199', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true),
+           ('Nyckollas Brandão', 'InstitutionalClient', '1234', '381099212',
+            'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true),
+           ('Carlos', 'PrivateClient', '1234', '607425393', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true),
+           ('Cristiano Ronaldo', 'PrivateClient', '1234', '493391882', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal',
+            true),
+           ('Bruno', 'PrivateClient', '962249051', '509869871', 'Rua Padre Santos Vieira nº1, Lisboa, Portugal', false);
 
 
     INSERT INTO private_clients (id, citizen_card_number)
-    VALUES (1, '123456789123');
+    VALUES (1, '123456789123001'),
+           (5, '638188683971442'),
+           (6, '724920477174198'),
+           (7, '725632908878066');
 
 
     INSERT INTO institutional_clients (id, contact_name)
-    VALUES (2, '123456789123');
+    VALUES (2, '123456789123'),
+           (3, '21434fgdfgsf'),
+           (4, 'afdsdhkgdfad');
 
 
     INSERT INTO gps_device_states (status)
@@ -58,10 +73,18 @@ BEGIN
 
 
     INSERT INTO gps_data (device_id, timestamp, location)
-    VALUES (1, '2022-04-12 04:05:06 UTC+3', point(18, 10));
+    VALUES (1, '2022-04-12 04:05:06 UTC+3', point(18, 10)),
+           (2, '2019-04-12 04:05:06 UTC+3', point(0, 10)),
+           (2, '2020-04-12 04:05:06 UTC+3', point(18, 0)),
+           (3, '2022-09-05 04:05:06 UTC+3', point(18, 95)),
+           (3, '2018-04-12 04:05:06 UTC+3', point(166, 25));
 
     INSERT INTO alarms (gps_data_id, driver_name)
-    VALUES (1, 'Sonic');
+    VALUES (1, 'Sonic'),
+           (2, 'Tails'),
+           (3, 'Eggman'),
+           (4, 'Sonic'),
+           (5, 'Tails');
 
 END;
 $$;
