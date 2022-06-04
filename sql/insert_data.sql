@@ -60,6 +60,9 @@ BEGIN
     INSERT INTO gps_data (device_id, timestamp, location)
     VALUES (1, '2022-04-12 04:05:06 UTC+3', point(18, 10));
 
+    INSERT INTO alarms (gps_data_id, driver_name)
+    VALUES (1, 'Sonic');
+
 END;
 $$;
 
