@@ -3,11 +3,12 @@ DROP TRIGGER IF EXISTS delete_client ON clients CASCADE;
 
 -- 2l)
 /*
-    Function:      delete_client_trigger
-    Description:    An execution of the DELETE statement on the "clients" table allows
-                    deactivating the client without erasing their data.
-    Parameter(s):   -
-    Return:         trigger
+    Function:           delete_client_trigger
+    Description:        An execution of the DELETE statement on the "clients" table allows
+                        deactivating the client without erasing their data.
+    Parameter(s):       -
+    Isolation Level:    READ UNCOMMITTED
+    Return:             trigger
 */
 CREATE OR REPLACE FUNCTION delete_client_trigger()
     RETURNS TRIGGER

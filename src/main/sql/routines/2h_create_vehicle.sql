@@ -2,18 +2,19 @@ DROP PROCEDURE IF EXISTS create_vehicle CASCADE;
 
 -- 2h)
 /*
-    Procedure:      create_vehicle
-    Description:    Creates a vehicle with the respective associated equipment information,
-                    and associates it with a customer.
-                    If data is passed to the creation of a green zone, creates it and
-                    associates the vehicle with that zone.
-    Parameter(s):   @v_gps_device_id
-                    @v_client_id
-                    @v_license_plate
-                    @v_num_alarms
-                    @gz_center_location
-                    @gz_radius
-    Return:         -
+    Procedure:          create_vehicle
+    Description:        Creates a vehicle with the respective associated equipment information,
+                        and associates it with a customer.
+                        If data is passed to the creation of a green zone, creates it and
+                        associates the vehicle with that zone.
+    Parameter(s):       @v_gps_device_id        - The id of the gps device that the vehicle is using.
+                        @v_client_id            - The id of the customer that the vehicle is associated with.
+                        @v_license_plate        - The license plate of the vehicle.
+                        @v_num_alarms           - The number of alarms the vehicle has.
+                        @gz_center_location     - The center location of the green zone.
+                        @gz_radius              - The radius of the green zone.
+    Isolation Level:    SERIALIZABLE
+    Return:             -
 */
 CREATE OR REPLACE PROCEDURE create_vehicle(
     v_gps_device_id INTEGER,

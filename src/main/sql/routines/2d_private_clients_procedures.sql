@@ -9,15 +9,16 @@ DROP PROCEDURE IF EXISTS update_private_client CASCADE;
 -- 2d)
 
 /*
-    Procedure:      insert_private_client
-    Description:    Inserts a private client, given his information.
-    Parameter(s):   @client_citizen_card_number
-                    @client_name
-                    @client_phone_number
-                    @client_nif
-                    @client_address
-                    @client_referee
-    Return:         -
+    Procedure:          insert_private_client
+    Description:        Inserts a private client, given his information.
+    Parameter(s):       @client_citizen_card_number - the client's citizen card number.
+                        @client_name                - the client's name.
+                        @client_phone_number        - the client's phone number.
+                        @client_nif                 - the client's nif.
+                        @client_address             - the client's address.
+                        @client_referee             - the client's referee.
+    Isolation Level:    READ UNCOMMITTED
+    Return:             -
 */
 CREATE OR REPLACE PROCEDURE insert_private_client(
     client_citizen_card_number VARCHAR(15),
@@ -44,10 +45,11 @@ $$;
 
 
 /*
-    Procedure:      remove_private_client
-    Description:    Removes a private client, given his id.
-    Parameter(s):   @client_id
-    Return:         -
+    Procedure:          remove_private_client
+    Description:        Removes a private client, given his id.
+    Parameter(s):       @client_id - the client's id.
+    Isolation Level:    READ UNCOMMITTED
+    Return:             -
 */
 CREATE OR REPLACE PROCEDURE remove_private_client(client_id INTEGER)
     LANGUAGE plpgsql
@@ -66,15 +68,16 @@ $$;
 
 
 /*
-    Procedure:      update_private_client
-    Description:    Updates a private client, given his id and new information.
-    Parameter(s):   @client_id
-                    @client_citizen_card_number
-                    @new_nif
-                    @new_name
-                    @new_address
-                    @new_client_referee
-    Return:         -
+    Procedure:          update_private_client
+    Description:        Updates a private client, given his id and new information.
+    Parameter(s):       @client_id - the client's id.
+                        @client_citizen_card_number - the client's citizen card number.
+                        @new_nif - the client's new nif.
+                        @new_name - the client's new name.
+                        @new_address - the client's new address.
+                        @new_client_referee - the client's new referee.
+    Isolation Level:    READ UNCOMMITTED
+    Return:             -
 */
 CREATE OR REPLACE PROCEDURE update_private_client(
     client_id INTEGER,

@@ -164,7 +164,7 @@ $$
         SELECT get_alarms_count(2022, '33-44-55')
         INTO alarms_count;
 
-        IF (alarms_count = 0) THEN
+        IF (alarms_count = 1) THEN
             RAISE NOTICE '2e) Test 4: Get alarms count with license plate - Scenario 2: OK';
         ELSE
             RAISE EXCEPTION '2e) Test 4: Get alarms count with license plate - Scenario 2: NOK';

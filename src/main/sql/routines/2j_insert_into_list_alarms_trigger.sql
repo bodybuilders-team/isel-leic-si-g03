@@ -4,10 +4,11 @@ DROP TRIGGER IF EXISTS insert_into_list_alarms ON list_alarms CASCADE;
 
 -- 2j)
 /*
-    Function:       insert_into_list_alarms_trigger
-    Description:    Allows adding an alarm and its record to the "list_alarms" view.
-    Parameter(s):   -
-    Return:         trigger
+    Function:           insert_into_list_alarms_trigger
+    Description:        Allows adding an alarm and its record to the "list_alarms" view.
+    Parameter(s):       -
+    Isolation Level:    REPEATABLE READ
+    Return:             trigger
 */
 CREATE OR REPLACE FUNCTION insert_into_list_alarms_trigger()
     RETURNS TRIGGER

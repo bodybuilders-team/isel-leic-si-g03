@@ -6,9 +6,9 @@ DROP TRIGGER IF EXISTS generate_alarm ON gps_data CASCADE;
 /*
     Function:       location_inside_green_zone
     Description:    Checks if a gps location is inside the green zone.
-    Parameter(s):   @green_zone_center
-                    @green_zone_radius
-                    @gps_location
+    Parameter(s):   @green_zone_center  - the center of the green zone
+                    @green_zone_radius  - the radius of the green zone
+                    @gps_location       - the gps location to check
     Return:         true if the gps location is inside the green zone; false otherwise
 TODO: change radius from kilometers to decimal degrees
 */
@@ -27,11 +27,12 @@ END;
 $$;
 
 /*
-    Function:       generate_alarm_trigger
-    Description:    Allows you to analyze the processed gps data when it is created,
-                    generating the corresponding alarm if it is outside any of its green zones.
-    Parameter(s):   -
-    Return:         trigger
+    Function:           generate_alarm_trigger
+    Description:        Allows you to analyze the processed gps data when it is created,
+                        generating the corresponding alarm if it is outside any of its green zones.
+    Parameter(s):       -
+    Isolation Level:    REPEATABLE READ
+    Return:             trigger
 */
 CREATE OR REPLACE FUNCTION generate_alarm_trigger()
     RETURNS TRIGGER

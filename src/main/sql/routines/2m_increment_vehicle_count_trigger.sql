@@ -3,10 +3,11 @@ DROP TRIGGER IF EXISTS create_alarm ON alarms CASCADE;
 
 -- 2m)
 /*
-    Function:       increment_vehicle_count_trigger
-    Description:    When an alarm is created, the number of vehicle alarms is updated.
-    Parameter(s):   -
-    Return:         trigger
+    Function:           increment_vehicle_count_trigger
+    Description:        When an alarm is created, the number of vehicle alarms is updated.
+    Parameter(s):       -
+    Isolation Level:    REPEATABLE READ
+    Return:             trigger
 */
 CREATE OR REPLACE FUNCTION increment_vehicle_count_trigger()
     RETURNS TRIGGER
