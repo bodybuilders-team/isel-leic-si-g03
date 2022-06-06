@@ -46,7 +46,7 @@ import static pt.isel.utils.ConsoleUI.requestString;
  */
 public class App {
     static final int GPS_DATA_PROCESSOR_INTERVAL = 5 * 60 * 1000; // 5 minutes
-    static final int INVALID_GPS_DATA_CLEANER_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    static final int INVALID_GPS_DATA_CLEANER_INTERVAL = 24 * 60 * 60 * 1000; // 1 day
 
     /**
      * Application entry point.
@@ -62,7 +62,7 @@ public class App {
         // Initialize the GPS data cleaner that cleans invalid GPS data
         Timer cleanGpsDataTimer = new Timer("Clean Invalid GPS Data");
         TimerTask cleanGpsDataTask = new GpsDataCleaner();
-        cleanGpsDataTimer.schedule(cleanGpsDataTask, 1000, INVALID_GPS_DATA_CLEANER_INTERVAL);
+        cleanGpsDataTimer.schedule(cleanGpsDataTask, 0, INVALID_GPS_DATA_CLEANER_INTERVAL);
 
 
         // App main loop
