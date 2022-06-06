@@ -4,12 +4,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
 import org.eclipse.persistence.internal.jpa.EntityManagerImpl;
 import org.eclipse.persistence.sessions.DatabaseLogin;
 
@@ -19,17 +21,22 @@ import org.eclipse.persistence.sessions.DatabaseLogin;
  */
 public class PersistenceManager {
 
-
     /**
      * Name of the persistence unit.
      */
     private static final String persistanceUnitName;
 
 
+    /**
+     * Represents a connection to the persistence context.
+     */
     public static class Session implements Closeable {
         private final EntityManagerFactory emf;
         private final EntityManager em;
 
+        /**
+         * Creates a new session.
+         */
         public Session() {
             this.emf = Persistence.createEntityManagerFactory(persistanceUnitName);
             this.em = emf.createEntityManager();
@@ -41,6 +48,11 @@ public class PersistenceManager {
             emf.close();
         }
 
+        /**
+         * Gets the entity manager.
+         *
+         * @return the entity manager.
+         */
         public EntityManager getEm() {
             return em;
         }
@@ -64,6 +76,8 @@ public class PersistenceManager {
      * Executes a transaction, given a function.
      *
      * @param fun the runnable to be executed
+     * @param <T> the type of the result
+     * @return the result of the function
      */
     public static <T> T execute(Function<EntityManager, T> fun) {
         Session session = new Session();
@@ -91,6 +105,8 @@ public class PersistenceManager {
      *
      * @param transactionIsolationLevel the isolation level of the transaction
      * @param fun                       the runnable to be executed
+     * @param <T>                       the type of the result
+     * @return the result of the runnable
      */
     public static <T> T executeWithIsolationLevel(int transactionIsolationLevel, Function<EntityManager, T> fun) {
         Session session = new Session();
@@ -122,6 +138,14 @@ public class PersistenceManager {
     }
 
 
+    /**
+     * Executes a function, inside a new transaction of an existing session.
+     *
+     * @param session the session
+     * @param fun     the runnable to be executed
+     * @param <T>     the return type of the function
+     * @return the result of the function
+     */
     @SuppressWarnings("TryFinallyCanBeTryWithResources")
     private static <T> T execute(Session session, Function<EntityManager, T> fun) {
         EntityManager em = session.getEm();
@@ -145,9 +169,14 @@ public class PersistenceManager {
         }
     }
 
+    /**
+     * Gets the database login of an entity manager.
+     *
+     * @param em the entity manager
+     * @return the database login
+     */
     private static DatabaseLogin getDatabaseLogin(EntityManager em) {
         org.eclipse.persistence.sessions.Session session = ((EntityManagerImpl) em).getSession();
         return (DatabaseLogin) (session).getDatasourceLogin();
     }
-
 }

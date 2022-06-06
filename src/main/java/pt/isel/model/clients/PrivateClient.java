@@ -12,12 +12,6 @@ import jakarta.persistence.Table;
 public class PrivateClient extends Client {
 
     /**
-     * The client citizen card number.
-     */
-    @Column(name = "citizen_card_number", nullable = false)
-    private String citizenCardNumber;
-
-    /**
      * Creates a new instance of PrivateClient.
      *
      * @param name              the client name
@@ -41,6 +35,12 @@ public class PrivateClient extends Client {
 
     // Needed for JPA...
     public PrivateClient() {}
+
+    /**
+     * The client citizen card number.
+     */
+    @Column(name = "citizen_card_number", nullable = false)
+    private String citizenCardNumber;
 
     /**
      * Gets the client citizen card number.

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.function.Consumer;
+
 import org.postgresql.ds.PGSimpleDataSource;
 
 /**
@@ -16,6 +17,13 @@ public class Utils {
 
     static final String DB_URL = "jdbc:postgresql://localhost/si_g03?user=postgres&password=postgres";
 
+    /**
+     * Creates the database, running the SQL scripts to create the tables, views, procedures, functions and triggers.
+     *
+     * @param insertData if true, the data will be inserted into the database.
+     * @throws SQLException if an error occurs while creating the database.
+     * @throws IOException  if an error occurs while reading the SQL scripts.
+     */
     public static void createDatabase(boolean insertData) throws SQLException, IOException {
         Utils.runSqlScript("src/main/sql/delete_database.sql");
         Utils.runSqlScript("src/main/sql/create_tables.sql");
@@ -37,7 +45,13 @@ public class Utils {
         createDatabase(true);
     }
 
-    // Utility function to run an SQL script file
+    /**
+     * Runs an SQL script file
+     *
+     * @param scriptFileName the name of the script file
+     * @throws IOException  if an error occurs while reading the SQL script.
+     * @throws SQLException if an error occurs while running the SQL script.
+     */
     public static void runSqlScript(String scriptFileName) throws IOException, SQLException {
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new java.io.FileReader(scriptFileName))) {
@@ -47,7 +61,6 @@ public class Utils {
                 sb.append("\n");
             }
         }
-
 
         PGSimpleDataSource ds = new PGSimpleDataSource();
         ds.setURL(DB_URL);
@@ -59,6 +72,12 @@ public class Utils {
         stmt.close();
     }
 
+    /**
+     * Iterates over the files in the given directory, calling the given consumer for each file.
+     *
+     * @param dir      the directory to iterate over.
+     * @param runnable the consumer to call for each file.
+     */
     public static void iterateFiles(String dir, Consumer<String> runnable) {
         java.io.File folder = new java.io.File(dir);
         File[] files = folder.listFiles();

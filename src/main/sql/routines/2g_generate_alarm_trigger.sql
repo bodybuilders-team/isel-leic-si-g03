@@ -24,12 +24,13 @@ DECLARE
     a DOUBLE PRECISION;
 BEGIN
     a := 0;
-    -- calculate distance between the gps location and the green zone center (in kilometers)
+
+    -- Calculate distance between the gps location and the green zone center (in kilometers)
     a := a + power(sin(radians(gps_location[0] - green_zone_center[0]) / 2), 2);
     a := a + cos(radians(green_zone_center[0])) * cos(radians(gps_location[0])) *
              power(sin(radians(gps_location[1] - green_zone_center[1]) / 2), 2);
 
-    -- return true if the gps location is inside the green zone
+    -- Return true if the gps location is inside the green zone
     RETURN 6371 * 2 * atan2(sqrt(a), sqrt(1 - a)) <= green_zone_radius;
 END;
 $$;
@@ -53,6 +54,7 @@ DECLARE
     v_device_status  VARCHAR(20);
     v_driver_name    VARCHAR(60);
 BEGIN
+    -- Iterate through the green zones of the associated device
     FOR green_zone IN SELECT *
                       FROM green_zones
                                JOIN(SELECT id
@@ -75,9 +77,13 @@ BEGIN
                      JOIN drivers ON vehicles.id = drivers.vehicle_id
             INTO v_driver_name;
 
-            IF location_inside_green_zone(point(green_zone.lat, green_zone.lon),
-                                          point(NEW.lat, NEW.lon), green_zone.radius) IS FALSE AND
-               v_device_status != 'AlarmPause'
+            -- If the gps location is outside the green zone, generate an alarm
+            IF location_inside_green_zone(
+                       point(green_zone.lat, green_zone.lon),
+                       point(NEW.lat, NEW.lon),
+                       green_zone.radius
+                   ) IS FALSE
+                AND v_device_status != 'AlarmPause'
             THEN
                 INSERT INTO alarms(gps_data_id, driver_name)
                 VALUES (NEW.id, v_driver_name);

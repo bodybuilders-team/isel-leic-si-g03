@@ -12,9 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+
 import pt.isel.model.Vehicle;
 
 
@@ -25,6 +27,26 @@ import pt.isel.model.Vehicle;
 @Table(name = "clients")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Client implements Serializable {
+
+    /**
+     * Creates a new instance of Client.
+     *
+     * @param name        the client name
+     * @param phoneNumber the client phone number
+     * @param nif         the client nif
+     * @param address     the client address
+     * @param active      true if the client is active, false otherwise
+     */
+    public Client(String name, String phoneNumber, String nif, String address, boolean active) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.nif = nif;
+        this.address = address;
+        this.active = active;
+    }
+
+    // Needed for JPA...
+    public Client() {}
 
     /**
      * Maximum number of vehicles that a private client can own.
@@ -86,26 +108,6 @@ public abstract class Client implements Serializable {
      * Client data type.
      */
     private String dtype;
-
-    /**
-     * Creates a new instance of Client.
-     *
-     * @param name        the client name
-     * @param phoneNumber the client phone number
-     * @param nif         the client nif
-     * @param address     the client address
-     * @param active      true if the client is active, false otherwise
-     */
-    public Client(String name, String phoneNumber, String nif, String address, boolean active) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.nif = nif;
-        this.address = address;
-        this.active = active;
-    }
-
-    // Needed for JPA...
-    public Client() {}
 
     /**
      * Gets the client id.
@@ -254,8 +256,10 @@ public abstract class Client implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Client client = (Client) o;
         return Objects.equals(id, client.id);
     }

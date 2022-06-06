@@ -18,21 +18,6 @@ import pt.isel.utils.GenericTypeSolver;
 public abstract class Repository<T> {
 
     /**
-     * Mapper for the entity.
-     */
-    protected final Mapper<T> mapper;
-
-    /**
-     * Entity manager.
-     */
-    protected final EntityManager em;
-
-    /**
-     * Generic type of the entity.
-     */
-    private final Class<T> genericType;
-
-    /**
      * Creates a new repository for the specified entity type.
      */
     @SuppressWarnings("unchecked")
@@ -52,6 +37,21 @@ public abstract class Repository<T> {
         this.mapper = new Mapper<>(em, genericType) {};
         this.em = em;
     }
+
+    /**
+     * Mapper for the entity.
+     */
+    protected final Mapper<T> mapper;
+
+    /**
+     * Entity manager.
+     */
+    protected final EntityManager em;
+
+    /**
+     * Generic type of the entity.
+     */
+    private final Class<T> genericType;
 
     /**
      * Adds the given entity to the repository.

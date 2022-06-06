@@ -278,17 +278,18 @@ SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 DO
 $$
     DECLARE
-        alarm RECORD;
+        alarm         RECORD;
         v_gps_data_id INTEGER;
     BEGIN
         CALL clear_and_insert_data();
 
         INSERT INTO gps_data(device_id, timestamp, lat, lon)
-        VALUES (1, '2022-04-12 14:05:06 UTC+1', 38, 9) RETURNING id INTO v_gps_data_id;
+        VALUES (1, '2022-04-12 14:05:06 UTC+1', 38, 9)
+        RETURNING id INTO v_gps_data_id;
 
         SELECT *
         FROM alarms
-                 WHERE gps_data_id = v_gps_data_id
+        WHERE gps_data_id = v_gps_data_id
         INTO alarm;
 
         IF (alarm IS NULL) THEN
@@ -436,7 +437,7 @@ $$
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (4, 2, '11-HH-22', 0);
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (5, 2, '19-T2-08', 0);
 
-        PERFORM create_vehicle(6, 2, '18-H1-77', 0, 10.0, 512.0, 5.0);
+        PERFORM create_vehicle(6, 2, '18-H1-77', 10.0, 512.0, 5.0);
 
         SELECT *
         FROM green_zones

@@ -4,10 +4,8 @@ DROP PROCEDURE IF EXISTS insert_private_client CASCADE;
 DROP PROCEDURE IF EXISTS remove_private_client CASCADE;
 DROP PROCEDURE IF EXISTS update_private_client CASCADE;
 
--- todo: check if locks are necessary for operations.
 
 -- 2d)
-
 /*
     Procedure:          insert_private_client
     Description:        Inserts a private client, given his information.

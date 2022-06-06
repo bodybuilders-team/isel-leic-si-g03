@@ -1,6 +1,7 @@
 package pt.isel.model;
 
 import jakarta.persistence.Embeddable;
+
 import java.util.Objects;
 
 /**
@@ -8,9 +9,6 @@ import java.util.Objects;
  */
 @Embeddable
 public class Point {
-
-    private Float x;
-    private Float y;
 
     /**
      * Creates a Point instance.
@@ -25,6 +23,9 @@ public class Point {
 
     // Needed for JPA...
     public Point() {}
+
+    private Float x;
+    private Float y;
 
 
     /**
@@ -77,11 +78,6 @@ public class Point {
         return new Point(x, y);
     }
 
-    /**
-     * Converts a Point to a String.
-     *
-     * @return String with the point coordinates
-     */
     @Override
     public String toString() {
         return "(" + this.getX() + "," + this.getY() + ")";
@@ -89,8 +85,10 @@ public class Point {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Point point = (Point) o;
         return Objects.equals(x, point.x) && Objects.equals(y, point.y);
     }

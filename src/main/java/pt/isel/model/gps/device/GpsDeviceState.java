@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
 
 /**
@@ -14,6 +15,18 @@ import java.util.Objects;
 @Entity
 @Table(name = "gps_device_states")
 public class GpsDeviceState {
+
+    /**
+     * Creates a new instance of GpsDeviceState.
+     *
+     * @param status the status
+     */
+    public GpsDeviceState(String status) {
+        this.status = status;
+    }
+
+    // Needed for JPA...
+    public GpsDeviceState() {}
 
     /**
      * The status id.
@@ -28,18 +41,6 @@ public class GpsDeviceState {
      */
     @Column(nullable = false)
     private String status;
-
-    /**
-     * Creates a new instance of GpsDeviceState.
-     *
-     * @param status the status
-     */
-    public GpsDeviceState(String status) {
-        this.status = status;
-    }
-
-    // Needed for JPA...
-    public GpsDeviceState() {}
 
     /**
      * Gets the status id.
@@ -88,8 +89,10 @@ public class GpsDeviceState {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         GpsDeviceState that = (GpsDeviceState) o;
         return Objects.equals(id, that.id);
     }

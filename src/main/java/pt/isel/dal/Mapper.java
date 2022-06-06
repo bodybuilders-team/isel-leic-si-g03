@@ -16,16 +16,6 @@ import pt.isel.utils.GenericTypeSolver;
 public abstract class Mapper<T> {
 
     /**
-     * Entity manager of the entity.
-     */
-    protected final EntityManager em;
-
-    /**
-     * Generic type of the entity.
-     */
-    private final Class<T> genericType;
-
-    /**
      * Creates a new mapper for the specified entity type.
      */
     @SuppressWarnings("unchecked")
@@ -43,6 +33,17 @@ public abstract class Mapper<T> {
         this.genericType = genericType;
         this.em = em;
     }
+
+    /**
+     * Entity manager of the entity.
+     */
+    protected final EntityManager em;
+
+    /**
+     * Generic type of the entity.
+     */
+    private final Class<T> genericType;
+
 
     /**
      * Creates a new entity.

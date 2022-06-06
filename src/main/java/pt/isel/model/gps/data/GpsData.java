@@ -12,7 +12,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
 import java.util.Objects;
+
 import pt.isel.model.Point;
 import pt.isel.model.gps.device.GpsDevice;
 
@@ -24,6 +26,22 @@ import java.util.Date;
 @Entity
 @Table(name = "gps_data")
 public class GpsData {
+
+    /**
+     * Creates a new instance of GPSData.
+     *
+     * @param gpsDevice the gps device
+     * @param timestamp the timestamp
+     * @param location  the location
+     */
+    public GpsData(GpsDevice gpsDevice, Date timestamp, Point location) {
+        this.gpsDevice = gpsDevice;
+        this.timestamp = timestamp;
+        this.location = location;
+    }
+
+    // Needed for JPA...
+    public GpsData() {}
 
     /**
      * The GPS data id.
@@ -55,22 +73,6 @@ public class GpsData {
             @AttributeOverride(name = "y", column = @Column(name = "lon", nullable = false))
     })
     private Point location;
-
-    /**
-     * Creates a new instance of GPSData.
-     *
-     * @param gpsDevice the gps device
-     * @param timestamp the timestamp
-     * @param location  the location
-     */
-    public GpsData(GpsDevice gpsDevice, Date timestamp, Point location) {
-        this.gpsDevice = gpsDevice;
-        this.timestamp = timestamp;
-        this.location = location;
-    }
-
-    // Needed for JPA...
-    public GpsData() {}
 
     /**
      * Gets the GPS data id.
@@ -157,8 +159,10 @@ public class GpsData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         GpsData gpsData = (GpsData) o;
         return Objects.equals(id, gpsData.id);
     }

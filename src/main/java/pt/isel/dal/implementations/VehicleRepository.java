@@ -32,6 +32,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      *
      * @param v  Vehicle to be created
      * @param gz GreenZone to be created
+     * @return true if the vehicle was created, false otherwise
      */
     public boolean createVehicle(Vehicle v, GreenZone gz) {
         return PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
@@ -50,9 +51,15 @@ public class VehicleRepository extends Repository<Vehicle> {
         });
     }
 
+    /**
+     * Gets the create vehicle stored procedure.
+     *
+     * @param em entity manager
+     * @return stored procedure
+     */
     private StoredProcedureQuery getCreateVehicleStoredProcedure(EntityManager em) {
-        StoredProcedureQuery query = em
-                .createStoredProcedureQuery("create_vehicle");
+        StoredProcedureQuery query = em.createStoredProcedureQuery("create_vehicle");
+
         query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(2, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
@@ -60,6 +67,7 @@ public class VehicleRepository extends Repository<Vehicle> {
         query.registerStoredProcedureParameter(5, Float.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(6, Double.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(7, Boolean.class, ParameterMode.OUT);
+
         return query;
     }
 
@@ -68,6 +76,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      * and associates it with a customer.
      *
      * @param v Vehicle to be created
+     * @return true if the vehicle was created, false otherwise
      */
     public boolean createVehicle(Vehicle v) {
         return PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
@@ -93,6 +102,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      *
      * @param v  Vehicle to be created
      * @param gz GreenZone to be created (optional)
+     * @return true if the vehicle was created, false otherwise
      */
     public boolean nativeCreateVehicle(Vehicle v, GreenZone gz) {
         em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
@@ -118,6 +128,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      * and associates it with a customer.
      *
      * @param v Vehicle to be created
+     * @return true if the vehicle was created, false otherwise
      */
     public boolean nativeCreateVehicle(Vehicle v) {
         em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);

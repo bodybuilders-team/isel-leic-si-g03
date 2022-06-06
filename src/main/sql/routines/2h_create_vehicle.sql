@@ -10,8 +10,8 @@ DROP PROCEDURE IF EXISTS create_vehicle CASCADE;
     Parameter(s):       @v_gps_device_id        - The id of the gps device that the vehicle is using.
                         @v_client_id            - The id of the customer that the vehicle is associated with.
                         @v_license_plate        - The license plate of the vehicle.
-                        @v_num_alarms           - The number of alarms the vehicle has.
-                        @gz_center_location     - The center location of the green zone.
+                        @gz_center_location_lat - The latitude of the center of the green zone.
+                        @gz_center_location_lon - The longitude of the center of the green zone.
                         @gz_radius              - The radius of the green zone.
     Isolation Level:    SERIALIZABLE
     Return:             -

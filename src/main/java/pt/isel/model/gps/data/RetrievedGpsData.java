@@ -14,6 +14,7 @@ import jakarta.persistence.TemporalType;
 import java.util.Date;
 
 import java.util.Objects;
+
 import pt.isel.model.Point;
 
 /**
@@ -21,6 +22,22 @@ import pt.isel.model.Point;
  */
 @MappedSuperclass
 public abstract class RetrievedGpsData {
+
+    /**
+     * Creates a new instance of RetrievedGpsData.
+     *
+     * @param gpsDeviceId the gps device
+     * @param timestamp   the timestamp
+     * @param location    the location
+     */
+    public RetrievedGpsData(Integer gpsDeviceId, Date timestamp, Point location) {
+        this.gpsDeviceId = gpsDeviceId;
+        this.timestamp = timestamp;
+        this.location = location;
+    }
+
+    // Needed for JPA...
+    public RetrievedGpsData() {}
 
     /**
      * The gps device that retrieved the gps data.
@@ -51,22 +68,6 @@ public abstract class RetrievedGpsData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    /**
-     * Creates a new instance of RetrievedGpsData.
-     *
-     * @param gpsDeviceId the gps device
-     * @param timestamp   the timestamp
-     * @param location    the location
-     */
-    public RetrievedGpsData(Integer gpsDeviceId, Date timestamp, Point location) {
-        this.gpsDeviceId = gpsDeviceId;
-        this.timestamp = timestamp;
-        this.location = location;
-    }
-
-    // Needed for JPA...
-    public RetrievedGpsData() {}
 
     /**
      * Gets the id of the retrieved gps data.
@@ -153,8 +154,10 @@ public abstract class RetrievedGpsData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         RetrievedGpsData that = (RetrievedGpsData) o;
         return Objects.equals(id, that.id);
     }

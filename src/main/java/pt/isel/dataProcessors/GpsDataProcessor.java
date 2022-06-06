@@ -1,6 +1,7 @@
 package pt.isel.dataProcessors;
 
 import java.util.TimerTask;
+
 import org.eclipse.persistence.sessions.DatabaseLogin;
 
 

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
 
 /**
@@ -14,6 +15,22 @@ import java.util.Objects;
 @Entity
 @Table(name = "drivers")
 public class Driver {
+
+    /**
+     * Creates a new instance of Driver.
+     *
+     * @param vehicle     the vehicle
+     * @param name        the name
+     * @param phoneNumber the phone number
+     */
+    public Driver(Vehicle vehicle, String name, String phoneNumber) {
+        this.vehicle = vehicle;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
+    // Needed for JPA...
+    public Driver() {}
 
     /**
      * The vehicle that the driver drives.
@@ -35,21 +52,6 @@ public class Driver {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    /**
-     * Creates a new instance of Driver.
-     *
-     * @param vehicle     the vehicle
-     * @param name        the name
-     * @param phoneNumber the phone number
-     */
-    public Driver(Vehicle vehicle, String name, String phoneNumber) {
-        this.vehicle = vehicle;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-    }
-
-    // Needed for JPA...
-    public Driver() {}
 
     /**
      * Gets the vehicle that the driver drives.
@@ -116,8 +118,10 @@ public class Driver {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Driver driver = (Driver) o;
         return Objects.equals(vehicle.getId(), driver.vehicle.getId());
     }

@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
 
 /**
@@ -19,6 +20,22 @@ import java.util.Objects;
 @Entity
 @Table(name = "green_zones")
 public class GreenZone {
+
+    /**
+     * Creates a new instance of GreenZone.
+     *
+     * @param vehicle        the vehicle
+     * @param centerLocation the center location
+     * @param radius         the radius
+     */
+    public GreenZone(Vehicle vehicle, Point centerLocation, Double radius) {
+        this.vehicle = vehicle;
+        this.centerLocation = centerLocation;
+        this.radius = radius;
+    }
+
+    // Needed for JPA...
+    public GreenZone() {}
 
     /**
      * The id of the green zone.
@@ -51,22 +68,6 @@ public class GreenZone {
      */
     @Column(name = "radius", nullable = false)
     private Double radius;
-
-    /**
-     * Creates a new instance of GreenZone.
-     *
-     * @param vehicle        the vehicle
-     * @param centerLocation the center location
-     * @param radius         the radius
-     */
-    public GreenZone(Vehicle vehicle, Point centerLocation, Double radius) {
-        this.vehicle = vehicle;
-        this.centerLocation = centerLocation;
-        this.radius = radius;
-    }
-
-    // Needed for JPA...
-    public GreenZone() {}
 
     /**
      * Gets the id of the green zone.
@@ -152,8 +153,10 @@ public class GreenZone {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         GreenZone greenZone = (GreenZone) o;
         return Objects.equals(id, greenZone.id);
     }

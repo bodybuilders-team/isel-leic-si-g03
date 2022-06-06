@@ -4,10 +4,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.RollbackException;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.Timer;
 import java.util.TimerTask;
+
 import org.eclipse.persistence.sessions.DatabaseLogin;
 import pt.isel.dal.Mapper;
 import pt.isel.model.gps.data.GpsData;
@@ -33,7 +34,8 @@ public class MockOptimisticGpsDataProcessor extends TimerTask {
                         e instanceof OptimisticLockException) {
                     if (nreps == 0)
                         throw new RuntimeException("Gps Data processor concurrency error");
-                } else throw e;
+                } else
+                    throw e;
             }
         } while (nreps > 0);
     }

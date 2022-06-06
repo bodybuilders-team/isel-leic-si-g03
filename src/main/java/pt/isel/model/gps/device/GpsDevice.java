@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
 
 /**
@@ -16,6 +17,18 @@ import java.util.Objects;
 @Entity
 @Table(name = "gps_devices")
 public class GpsDevice {
+
+    /**
+     * Creates a new instance of GpsDevice.
+     *
+     * @param deviceStatus the device status
+     */
+    public GpsDevice(GpsDeviceState deviceStatus) {
+        this.deviceStatus = deviceStatus;
+    }
+
+    // Needed for JPA...
+    public GpsDevice() {}
 
     /**
      * The id of the device.
@@ -32,17 +45,6 @@ public class GpsDevice {
     @JoinColumn(name = "device_status", nullable = false)
     private GpsDeviceState deviceStatus;
 
-    /**
-     * Creates a new instance of GpsDevice.
-     *
-     * @param deviceStatus the device status
-     */
-    public GpsDevice(GpsDeviceState deviceStatus) {
-        this.deviceStatus = deviceStatus;
-    }
-
-    // Needed for JPA...
-    public GpsDevice() {}
 
     /**
      * Gets the id of the device.
@@ -91,8 +93,10 @@ public class GpsDevice {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         GpsDevice gpsDevice = (GpsDevice) o;
         return Objects.equals(id, gpsDevice.id);
     }

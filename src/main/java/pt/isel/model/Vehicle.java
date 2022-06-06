@@ -11,8 +11,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
-import org.eclipse.persistence.annotations.NamedStoredFunctionQuery;
+
 import pt.isel.model.clients.Client;
 import pt.isel.model.gps.device.GpsDevice;
 
@@ -23,6 +24,24 @@ import pt.isel.model.gps.device.GpsDevice;
 @Entity
 @Table(name = "vehicles")
 public class Vehicle {
+
+    /**
+     * Creates a new instance of Vehicle.
+     *
+     * @param gpsDevice    the gps device
+     * @param client       the client
+     * @param licensePlate the license plate
+     * @param numAlarms    the num alarms
+     */
+    public Vehicle(GpsDevice gpsDevice, Client client, String licensePlate, Integer numAlarms) {
+        this.gpsDevice = gpsDevice;
+        this.client = client;
+        this.licensePlate = licensePlate;
+        this.numAlarms = numAlarms;
+    }
+
+    // Needed for JPA...
+    public Vehicle() {}
 
     /**
      * The vehicle id.
@@ -58,23 +77,6 @@ public class Vehicle {
     @Column(name = "num_alarms", nullable = false)
     private Integer numAlarms;
 
-    /**
-     * Creates a new instance of Vehicle.
-     *
-     * @param gpsDevice    the gps device
-     * @param client       the client
-     * @param licensePlate the license plate
-     * @param numAlarms    the num alarms
-     */
-    public Vehicle(GpsDevice gpsDevice, Client client, String licensePlate, Integer numAlarms) {
-        this.gpsDevice = gpsDevice;
-        this.client = client;
-        this.licensePlate = licensePlate;
-        this.numAlarms = numAlarms;
-    }
-
-    // Needed for JPA...
-    public Vehicle() {}
 
     /**
      * Gets the vehicle id.
@@ -199,8 +201,10 @@ public class Vehicle {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Vehicle vehicle = (Vehicle) o;
         return Objects.equals(id, vehicle.id);
     }

@@ -1,6 +1,7 @@
 package pt.isel.presentation;
 
 import jakarta.persistence.EntityManager;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.Repository;
 import pt.isel.dal.implementations.AlarmDataRepository;
@@ -52,10 +54,12 @@ public class App {
     public static void main(String[] args) throws SQLException, IOException {
         Utils.createDatabase(true);
 
+        // Initialize the GPS data processor that processes unprocessed GPS data
         Timer processGpsDataTimer = new Timer("Process GPS Data");
         TimerTask processGpsDataTask = new GpsDataProcessor();
         processGpsDataTimer.schedule(processGpsDataTask, 0, GPS_DATA_PROCESSOR_INTERVAL);
 
+        // Initialize the GPS data cleaner that cleans invalid GPS data
         Timer cleanGpsDataTimer = new Timer("Clean Invalid GPS Data");
         TimerTask cleanGpsDataTask = new GpsDataCleaner();
         cleanGpsDataTimer.schedule(cleanGpsDataTask, 1000, INVALID_GPS_DATA_CLEANER_INTERVAL);
@@ -245,6 +249,7 @@ public class App {
     private static void createVehicle(EntityManager em) {
         System.out.println("\n<------------------ Create Vehicle ------------------>\n");
 
+        // Create new gps device
         Repository<GpsDevice> gpsDeviceRepository = new Repository<>(em) {};
         Repository<GpsDeviceState> gpsDeviceStateRepository = new Repository<>(em) {};
 
@@ -253,6 +258,7 @@ public class App {
 
         gpsDeviceRepository.add(gpsDevice);
 
+        // Request vehicle data
         String clientNif = requestString("Client NIF: ");
         Repository<Client> clientRepository = new Repository<>(em) {};
         Optional<Client> owner = clientRepository.get((client) -> client.getNif().equals(clientNif));
@@ -264,10 +270,11 @@ public class App {
 
         String licensePlate = requestString("License Plate: ");
 
+        // Create new vehicle
         Vehicle vehicle = new Vehicle(gpsDevice, owner.get(), licensePlate, 0);
-
         VehicleRepository vehicleRepository = new VehicleRepository(em);
 
+        // Create new green zone
         if (requestBoolean("Create green zone?(true/false): ")) {
             String centerLocation = requestString("Center Location: ");
             Double radius = requestDouble("Radius: ");

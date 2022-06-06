@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.Test;
 import pt.isel.utils.Utils;
 
@@ -18,8 +19,8 @@ public class OptimisticGpsDataProcessorTest {
 
         for (int i = 0; i < numThreads; i++) {
             threads.add(new Thread(() -> {
-                    OptimisticGpsDataProcessor processor = new OptimisticGpsDataProcessor();
-                    processor.run();
+                OptimisticGpsDataProcessor processor = new OptimisticGpsDataProcessor();
+                processor.run();
             }));
         }
 

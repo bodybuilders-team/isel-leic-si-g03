@@ -6,7 +6,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
+
 import pt.isel.model.gps.data.GpsData;
 
 /**
@@ -15,20 +17,6 @@ import pt.isel.model.gps.data.GpsData;
 @Entity
 @Table(name = "alarms")
 public class Alarm {
-
-    /**
-     * The gps data associated with the alarm.
-     */
-    @Id
-    @OneToOne
-    @JoinColumn(name = "gps_data_id",nullable = false)
-    private GpsData gpsData;
-
-    /**
-     * The driver name.
-     */
-    @Column(name = "driver_name", nullable = false)
-    private String driverName;
 
     /**
      * Creates a new instance of Alarm.
@@ -43,6 +31,20 @@ public class Alarm {
 
     // Needed for JPA...
     public Alarm() {}
+
+    /**
+     * The gps data associated with the alarm.
+     */
+    @Id
+    @OneToOne
+    @JoinColumn(name = "gps_data_id", nullable = false)
+    private GpsData gpsData;
+
+    /**
+     * The driver name.
+     */
+    @Column(name = "driver_name", nullable = false)
+    private String driverName;
 
     /**
      * Gets the gps data.
@@ -90,8 +92,10 @@ public class Alarm {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Alarm alarm = (Alarm) o;
         return Objects.equals(gpsData.getId(), alarm.gpsData.getId());
     }

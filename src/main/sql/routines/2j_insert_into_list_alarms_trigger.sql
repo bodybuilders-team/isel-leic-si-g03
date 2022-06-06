@@ -16,8 +16,8 @@ CREATE OR REPLACE FUNCTION insert_into_list_alarms_trigger()
 AS
 $insert_into_list_alarms_trigger$
 DECLARE
-    vehicle RECORD;
-    alarm   RECORD;
+    vehicle       RECORD;
+    alarm         RECORD;
     v_gps_data_id INTEGER;
 BEGIN
 
@@ -30,7 +30,8 @@ BEGIN
 
     -- Insert new gps data
     INSERT INTO gps_data(device_id, timestamp, lat, lon)
-    VALUES (vehicle.gps_device_id, NEW.timestamp, NEW.lat, NEW.lon) RETURNING id INTO v_gps_data_id;
+    VALUES (vehicle.gps_device_id, NEW.timestamp, NEW.lat, NEW.lon)
+    RETURNING id INTO v_gps_data_id;
 
     SELECT * FROM alarms WHERE gps_data_id = v_gps_data_id INTO alarm;
 

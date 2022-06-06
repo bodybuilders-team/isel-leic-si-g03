@@ -4,6 +4,9 @@ import jakarta.persistence.EntityManager;
 import pt.isel.dal.Repository;
 import pt.isel.model.AlarmData;
 
+/**
+ * Repository for AlarmData.
+ */
 public class AlarmDataRepository extends Repository<AlarmData> {
 
     public AlarmDataRepository(EntityManager em) {

@@ -19,6 +19,7 @@ CREATE OR REPLACE FUNCTION get_alarms_count(
     LANGUAGE plpgsql AS
 $$
 BEGIN
+    -- If license plate is specified, return the number of alarms for the given year and license plate.
     IF (license_plate_a IS NOT NULL) THEN
         RETURN (SELECT COUNT(*)
                 FROM alarms
@@ -32,6 +33,7 @@ BEGIN
                              ON alarms.gps_data_id = gps_data_ids.id);
     END IF;
 
+    -- If license plate is not specified, return the number of alarms for the given year.
     RETURN (SELECT COUNT(*)
             FROM alarms
                      JOIN(SELECT gps_data.id

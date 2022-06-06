@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
 import java.util.Date;
 
 /**
@@ -18,13 +19,21 @@ import java.util.Date;
 @Table(name = "list_alarms")
 public class AlarmData {
 
-    public AlarmData() {}
-
+    /**
+     * Create a new AlarmData instance.
+     *
+     * @param licensePlate license plate of the vehicle
+     * @param location     location of the vehicle
+     * @param timestamp    timestamp of the alarm
+     */
     public AlarmData(String licensePlate, Point location, Date timestamp) {
         this.licensePlate = licensePlate;
         this.location = location;
         this.timestamp = timestamp;
     }
+
+    // Needed for JPA...
+    public AlarmData() {}
 
     /**
      * The gps data associated with the alarm.

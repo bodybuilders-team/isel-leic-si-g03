@@ -11,14 +11,14 @@
 \begin{document}
     \pagenumbering{gobble}
 
-    InstitutionalClient(\underline{id}, referral, name, phone\_number, nif, address, active, contact\_name)\\
+    InstitutionalClient(\underline{id}, referral, name, dtype, phone\_number, nif, address, active, contact\_name)\\
     FK: \{ referral \} de PrivateClient.id
 
-    PrivateClient(\underline{id}, referral, name, phone\_number, nif,
+    PrivateClient(\underline{id}, referral, name, dtype, phone\_number, nif,
     address, active, citizen\_card\_number)\\
     FK: \{ referral \} de PrivateClient.id
 
-    GreenZone(\underline{id}, vehicle\_id, center\_location, radius)\\
+    GreenZone(\underline{id}, vehicle\_id, lat, lon, radius)\\
     FK: \{ vehicle\_id \} de Vehicle.id
 
     Driver(\underline{vehicle\_id}, name, phone\_number)\\
@@ -32,14 +32,14 @@
 
     GPSDeviceState(\underline{id}, status)
 
-    GPSData(\underline{id}, device\_id, timestamp, location)\\
+    GPSData(\underline{id}, device\_id, timestamp, lat, lon)\\
     FK: \{ device\_id \} de GPSDevice.id
 
     Alarm(\underline{gps\_data\_id}, driver\_name)\\
     FK: \{ gps\_data\_id \} de GPSData.id
 
-    UnprocessedGPSData(\underline{id}, timestamp, location, device\_id)
+    UnprocessedGPSData(\underline{id}, timestamp, lat, lon, device\_id)
 
-    InvalidGPSData(\underline{id}, timestamp, location, device\_id)
+    InvalidGPSData(\underline{id}, timestamp, lat, lon, device\_id)
 
 \end{document}
