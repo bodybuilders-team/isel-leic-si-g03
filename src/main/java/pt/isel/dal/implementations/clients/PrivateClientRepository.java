@@ -41,7 +41,7 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
      * @param client the PrivateClient to be inserted
      */
     public void add(PrivateClient client) {
-        Query query = em.createNativeQuery("CALL insert_private_client(?,?,?,?::CHAR,?,?::INTEGER)");
+        Query query = em.createNativeQuery("CALL insert_private_client(?,?,?,?::CHAR(9),?,?::INTEGER)");
 
         query.setParameter(1, client.getCitizenCardNumber());
         query.setParameter(2, client.getName());
@@ -74,7 +74,7 @@ public class PrivateClientRepository extends Repository<PrivateClient> {
      * @param client the PrivateClient to be updated
      */
     public void update(PrivateClient client) {
-        Query query = em.createNativeQuery("CALL update_private_client(?::INTEGER,?,?::CHAR,?,?,?::INTEGER)");
+        Query query = em.createNativeQuery("CALL update_private_client(?::INTEGER,?,?::CHAR(9),?,?,?::INTEGER)");
 
         query.setParameter(1, client.getId());
         query.setParameter(2, client.getCitizenCardNumber());

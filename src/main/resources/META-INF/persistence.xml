@@ -18,6 +18,7 @@
         <property name="eclipselink.logging.level.transaction" value="FINEST" />
         <property name="eclipselink.logging.level.query" value="FINEST" />
          -->
+            <property name="eclipselink.logging.file" value="output.log"/>
         </properties>
     </persistence-unit>
 </persistence>

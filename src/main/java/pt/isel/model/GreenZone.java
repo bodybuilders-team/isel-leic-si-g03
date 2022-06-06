@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 
 /**
  * GreenZone entity.
@@ -24,6 +25,7 @@ public class GreenZone {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Integer id;
 
     /**
@@ -146,5 +148,18 @@ public class GreenZone {
                 ", centerLocation='" + centerLocation + '\'' +
                 ", radius=" + radius +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GreenZone greenZone = (GreenZone) o;
+        return Objects.equals(id, greenZone.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

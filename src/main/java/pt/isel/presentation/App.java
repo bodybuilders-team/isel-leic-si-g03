@@ -1,14 +1,23 @@
 package pt.isel.presentation;
 
+import jakarta.persistence.EntityManager;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-
-import jakarta.persistence.EntityManager;
+import java.util.Timer;
+import java.util.TimerTask;
 import pt.isel.dal.PersistenceManager;
 import pt.isel.dal.Repository;
+import pt.isel.dal.implementations.AlarmDataRepository;
 import pt.isel.dal.implementations.VehicleRepository;
 import pt.isel.dal.implementations.clients.PrivateClientRepository;
+import pt.isel.dataProcessors.GpsDataCleaner;
+import pt.isel.dataProcessors.GpsDataProcessor;
 import pt.isel.model.AlarmData;
 import pt.isel.model.GreenZone;
 import pt.isel.model.Point;
@@ -16,6 +25,8 @@ import pt.isel.model.Vehicle;
 import pt.isel.model.clients.Client;
 import pt.isel.model.clients.PrivateClient;
 import pt.isel.model.gps.device.GpsDevice;
+import pt.isel.model.gps.device.GpsDeviceState;
+import pt.isel.utils.Utils;
 
 
 import static pt.isel.utils.ConsoleUI.requestBoolean;
@@ -32,20 +43,23 @@ import static pt.isel.utils.ConsoleUI.requestString;
  * @author 48287 Nyckollas Brandão
  */
 public class App {
+    static final int GPS_DATA_PROCESSOR_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    static final int INVALID_GPS_DATA_CLEANER_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
     /**
      * Application entry point.
      */
-    public static void main(String[] args) {
-        /*Timer processGpsDataTimer = new Timer("Process GPS Data");
+    public static void main(String[] args) throws SQLException, IOException {
+        Utils.createDatabase(true);
+
+        Timer processGpsDataTimer = new Timer("Process GPS Data");
         TimerTask processGpsDataTask = new GpsDataProcessor();
-        processGpsDataTimer.schedule(processGpsDataTask, 0, 5 * 60 * 1000); // TODO: Magic constants?
+        processGpsDataTimer.schedule(processGpsDataTask, 0, GPS_DATA_PROCESSOR_INTERVAL);
 
         Timer cleanGpsDataTimer = new Timer("Clean Invalid GPS Data");
         TimerTask cleanGpsDataTask = new GpsDataCleaner();
-        cleanGpsDataTimer.schedule(cleanGpsDataTask, 0, 5 * 60 * 1000); // TODO: Magic constants?*/
+        cleanGpsDataTimer.schedule(cleanGpsDataTask, 1000, INVALID_GPS_DATA_CLEANER_INTERVAL);
 
-        // TODO: 04/06/2022 Maybe execute scripts to add routines to the database?
 
         // App main loop
         do {
@@ -56,7 +70,7 @@ public class App {
             }
 
             if (userInput != null)
-                PersistenceManager.execute((em) -> executeOperation(userInput, em));
+                PersistenceManager.execute((em) -> {executeOperation(userInput, em);});
             else
                 System.out.println("Invalid Operation.");
 
@@ -160,8 +174,10 @@ public class App {
 
         if (privateClient.isPresent()) {
             System.out.println("Introduce the new data for the client:");
-            PrivateClient updatedClient = requestPrivateClient();
-            privateClientRepository.update(updatedClient);
+            PrivateClient updateClient = requestPrivateClient();
+            updateClient.setId(privateClient.get().getId());
+
+            privateClientRepository.update(updateClient);
         } else
             System.out.println("Client not found.");
     }
@@ -225,17 +241,17 @@ public class App {
      *
      * @param em entity manager
      */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private static void createVehicle(EntityManager em) {
         System.out.println("\n<------------------ Create Vehicle ------------------>\n");
 
-        Integer gpsDeviceId = requestInteger("GPS Device ID: ");
         Repository<GpsDevice> gpsDeviceRepository = new Repository<>(em) {};
-        Optional<GpsDevice> vGpsDevice = gpsDeviceRepository.get((gpsDevice) -> gpsDevice.getId().equals(gpsDeviceId));
+        Repository<GpsDeviceState> gpsDeviceStateRepository = new Repository<>(em) {};
 
-        if (vGpsDevice.isEmpty()) {
-            System.out.println("GPS Device not found.");
-            return;
-        }
+        GpsDeviceState activeState = gpsDeviceStateRepository.get((state) -> state.getStatus().equals("Active")).get();
+        GpsDevice gpsDevice = new GpsDevice(activeState);
+
+        gpsDeviceRepository.add(gpsDevice);
 
         String clientNif = requestString("Client NIF: ");
         Repository<Client> clientRepository = new Repository<>(em) {};
@@ -247,13 +263,10 @@ public class App {
         }
 
         String licensePlate = requestString("License Plate: ");
-        Integer numAlarms = requestInteger("Number of alarms: ");
 
-
-        Vehicle vehicle = new Vehicle(vGpsDevice.get(), owner.get(), licensePlate, numAlarms);
+        Vehicle vehicle = new Vehicle(gpsDevice, owner.get(), licensePlate, 0);
 
         VehicleRepository vehicleRepository = new VehicleRepository(em);
-        vehicleRepository.add(vehicle);
 
         if (requestBoolean("Create green zone?(true/false): ")) {
             String centerLocation = requestString("Center Location: ");
@@ -261,8 +274,13 @@ public class App {
 
             GreenZone greenZone = new GreenZone(vehicle, Point.parsePoint(centerLocation), radius);
 
-            Repository<GreenZone> greenZoneRepository = new Repository<>(em) {};
-            greenZoneRepository.add(greenZone);
+            boolean created = vehicleRepository.nativeCreateVehicle(vehicle, greenZone);
+            if (!created)
+                System.out.println("Number of vehicles exceeded");
+        } else {
+            boolean created = vehicleRepository.nativeCreateVehicle(vehicle);
+            if (!created)
+                System.out.println("Number of vehicles exceeded");
         }
     }
 
@@ -286,7 +304,7 @@ public class App {
         else {
             Optional<Vehicle> vehicle = vehicleRepository.get((v) -> v.getLicensePlate().equals(licensePlate));
             if (vehicle.isPresent())
-                System.out.println("Total number of alarms:" + vehicle.get().getAlarmsCount(year));
+                System.out.println("Total number of alarms:" + vehicle.get().getAlarmsCount(em, year));
             else
                 System.out.println("Vehicle not found.");
         }
@@ -313,10 +331,30 @@ public class App {
     private static void insertAlarmData(EntityManager em) {
         System.out.println("\n<------------------ Insert Alarm Data ------------------>\n");
 
-        Repository<AlarmData> alarmDataRepository = new Repository<>(em) {};
+        AlarmDataRepository alarmDataRepository = new AlarmDataRepository(em);
 
-        AlarmData alarmData = new AlarmData(); // TODO
+        Optional<AlarmData> alarmData = requestAlarmData();
 
-        alarmDataRepository.add(alarmData);
+        alarmData.ifPresent(alarmDataRepository::add);
     }
+
+    private static final String alarm_date_format = "yyyy-MM-dd HH:mm:ss";
+
+    private static Optional<AlarmData> requestAlarmData() {
+        String licensePlate = requestString("License Plate: ");
+        String alarmLocation = requestString("Alarm location (format: (x,y)): ");
+
+        String alarmTime = requestString("Alarm Time: (format: " + alarm_date_format + "):");
+
+        Date alarmDate;
+        try {
+            alarmDate = new SimpleDateFormat(alarm_date_format).parse(alarmTime);
+        } catch (ParseException e) {
+            System.out.println("Invalid alarm time format.");
+            return Optional.empty();
+        }
+
+        return Optional.of(new AlarmData(licensePlate, Point.parsePoint(alarmLocation), alarmDate));
+    }
+
 }

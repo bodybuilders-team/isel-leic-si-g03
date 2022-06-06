@@ -16,15 +16,14 @@ DROP PROCEDURE IF EXISTS create_vehicle CASCADE;
     Isolation Level:    SERIALIZABLE
     Return:             -
 */
-CREATE OR REPLACE PROCEDURE create_vehicle(
+CREATE OR REPLACE FUNCTION create_vehicle(
     v_gps_device_id INTEGER,
     v_client_id INTEGER,
     v_license_plate VARCHAR(10),
-    v_num_alarms INTEGER,
     gz_center_location_lat FLOAT DEFAULT NULL,
     gz_center_location_lon FLOAT DEFAULT NULL,
     gz_radius DOUBLE PRECISION DEFAULT NULL
-)
+) RETURNS BOOLEAN
     LANGUAGE plpgsql
 AS
 $$
@@ -42,7 +41,7 @@ BEGIN
     -- If the client is institutional or has less than 3 cars
     IF (SELECT EXISTS(SELECT 1 FROM institutional_clients WHERE id = v_client_id) OR v_client_cars_count < 3) THEN
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms)
-        VALUES (v_gps_device_id, v_client_id, v_license_plate, v_num_alarms)
+        VALUES (v_gps_device_id, v_client_id, v_license_plate, 0)
         RETURNING id INTO v_id;
 
         IF (gz_center_location_lat IS NOT NULL AND gz_center_location_lon IS NOT NULL AND gz_radius IS NOT NULL) THEN
@@ -50,6 +49,10 @@ BEGIN
             VALUES (v_id, gz_center_location_lat, gz_center_location_lon, gz_radius)
             RETURNING id INTO green_zone_id;
         END IF;
+    ELSE
+        RETURN FALSE;
     END IF;
+
+    RETURN TRUE;
 END;
 $$;

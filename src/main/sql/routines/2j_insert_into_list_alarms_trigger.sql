@@ -17,6 +17,8 @@ AS
 $insert_into_list_alarms_trigger$
 DECLARE
     vehicle RECORD;
+    alarm   RECORD;
+    v_gps_data_id INTEGER;
 BEGIN
 
     -- Get vehicle and if there's a driver, the driver's name --
@@ -27,8 +29,15 @@ BEGIN
     INTO vehicle;
 
     -- Insert new gps data
-    INSERT INTO gps_data(id, device_id, timestamp, lat, lon)
-    VALUES (NEW.gps_data_id, vehicle.gps_device_id, NEW.timestamp, NEW.lat, NEW.lon);
+    INSERT INTO gps_data(device_id, timestamp, lat, lon)
+    VALUES (vehicle.gps_device_id, NEW.timestamp, NEW.lat, NEW.lon) RETURNING id INTO v_gps_data_id;
+
+    SELECT * FROM alarms WHERE gps_data_id = v_gps_data_id INTO alarm;
+
+    IF (alarm IS NULL) THEN
+        INSERT INTO alarms(gps_data_id, driver_name)
+        VALUES (v_gps_data_id, vehicle.driver_name);
+    END IF;
 
     RETURN NEW;
 END;

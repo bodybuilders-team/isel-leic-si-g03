@@ -13,6 +13,7 @@ import jakarta.persistence.TemporalType;
 
 import java.util.Date;
 
+import java.util.Objects;
 import pt.isel.model.Point;
 
 /**
@@ -148,5 +149,18 @@ public abstract class RetrievedGpsData {
                 ", timestamp=" + timestamp +
                 ", location='" + location + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RetrievedGpsData that = (RetrievedGpsData) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

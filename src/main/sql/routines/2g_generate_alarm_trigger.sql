@@ -10,19 +10,27 @@ DROP TRIGGER IF EXISTS generate_alarm ON gps_data CASCADE;
                     @green_zone_radius  - the radius of the green zone
                     @gps_location       - the gps location to check
     Return:         true if the gps location is inside the green zone; false otherwise
-TODO: change radius from kilometers to decimal degrees
 */
 CREATE OR REPLACE FUNCTION location_inside_green_zone(
     green_zone_center POINT,
-    green_zone_radius DOUBLE PRECISION,
-    gps_location POINT
+    gps_location POINT,
+    green_zone_radius DOUBLE PRECISION
 )
     RETURNS BOOLEAN
     LANGUAGE plpgsql
 AS
 $$
+DECLARE
+    a DOUBLE PRECISION;
 BEGIN
-    RETURN ((green_zone_center <-> gps_location) <= green_zone_radius);
+    a := 0;
+    -- calculate distance between the gps location and the green zone center (in kilometers)
+    a := a + power(sin(radians(gps_location[0] - green_zone_center[0]) / 2), 2);
+    a := a + cos(radians(green_zone_center[0])) * cos(radians(gps_location[0])) *
+             power(sin(radians(gps_location[1] - green_zone_center[1]) / 2), 2);
+
+    -- return true if the gps location is inside the green zone
+    RETURN 6371 * 2 * atan2(sqrt(a), sqrt(1 - a)) <= green_zone_radius;
 END;
 $$;
 
@@ -67,16 +75,16 @@ BEGIN
                      JOIN drivers ON vehicles.id = drivers.vehicle_id
             INTO v_driver_name;
 
-            IF location_inside_green_zone(point(green_zone.lat, green_zone.lon), green_zone.radius,
-                                          point(NEW.lat, NEW.lon)) AND
+            IF location_inside_green_zone(point(green_zone.lat, green_zone.lon),
+                                          point(NEW.lat, NEW.lon), green_zone.radius) IS FALSE AND
                v_device_status != 'AlarmPause'
             THEN
+                INSERT INTO alarms(gps_data_id, driver_name)
+                VALUES (NEW.id, v_driver_name);
                 RETURN NEW;
             END IF;
         END LOOP;
 
-    INSERT INTO alarms(gps_data_id, driver_name)
-    VALUES (NEW.id, v_driver_name);
     RETURN NEW;
 END;
 $alarm_gps_data_trigger$;

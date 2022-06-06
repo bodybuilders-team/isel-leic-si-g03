@@ -12,10 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import java.io.Serializable;
 import java.util.List;
-
+import java.util.Objects;
 import pt.isel.model.Vehicle;
 
 
@@ -30,7 +29,7 @@ public abstract class Client implements Serializable {
     /**
      * Maximum number of vehicles that a private client can own.
      */
-    public static final Integer maxVehicles = 3;
+    public static final int maxVehicles = 3;
 
     /**
      * The client referral.
@@ -74,6 +73,7 @@ public abstract class Client implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Integer id;
 
     /**
@@ -250,5 +250,18 @@ public abstract class Client implements Serializable {
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
         vehicle.setClient(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+        return Objects.equals(id, client.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

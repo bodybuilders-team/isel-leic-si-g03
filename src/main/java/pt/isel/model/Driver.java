@@ -3,8 +3,10 @@ package pt.isel.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 
 /**
  * Driver entity.
@@ -18,6 +20,7 @@ public class Driver {
      */
     @Id
     @OneToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
     /**
@@ -109,5 +112,18 @@ public class Driver {
                 ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Driver driver = (Driver) o;
+        return Objects.equals(vehicle.getId(), driver.vehicle.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vehicle.getId());
     }
 }

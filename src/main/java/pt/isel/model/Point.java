@@ -1,6 +1,7 @@
 package pt.isel.model;
 
 import jakarta.persistence.Embeddable;
+import java.util.Objects;
 
 /**
  * Represents a point in a 2D space.
@@ -84,5 +85,18 @@ public class Point {
     @Override
     public String toString() {
         return "(" + this.getX() + "," + this.getY() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Objects.equals(x, point.x) && Objects.equals(y, point.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

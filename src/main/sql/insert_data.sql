@@ -60,16 +60,17 @@ BEGIN
 
 
     INSERT INTO green_zones (vehicle_id, lat, lon, radius)
-    VALUES (1, 38.6556752, -9.0100229, 5),
-           (1, 39.511, -9.0100229, 5),
-           (2, 28.6556752, -9.0100229, 10),
-           (3, 18.6556752, -9.0100229, 15);
+    VALUES (1, 38.6556752, 9.0100229, 1000),
+           (1, 38.511, 9.0100229, 1000),
+           (2, 28.6556752, 9.0100229, 10),
+           (3, 18.6556752, 9.0100229, 15);
 
 
     INSERT INTO unprocessed_gps_data (device_id, timestamp, lat, lon, version)
     VALUES (1, '2022-04-12 04:05:06 UTC+1', 18, 9, 0),
            (1, '2020-04-12 04:05:06 PST', 18, 9, 0),
-           (3, '2020-04-12 04:05:06 UTC+0', 18, 9, 0);
+           (3, '2020-04-12 04:05:06 UTC+0', 18, 9, 0),
+           (7, '2022-05-06 04:05:06 PST', 18, 9, 0);
 
 
     INSERT INTO gps_data (device_id, timestamp, lat, lon)
@@ -79,14 +80,8 @@ BEGIN
            (3, '2022-09-05 04:05:06 UTC+3', 18, 95),
            (3, '2018-04-12 04:05:06 UTC+3', 166, 25);
 
-    INSERT INTO alarms (gps_data_id, driver_name)
-    VALUES (1, 'Sonic'),
-           (2, 'Tails'),
-           (3, 'Eggman'),
-           (4, 'Sonic'),
-           (5, 'Tails');
-
 END;
 $$;
+
 
 CALL insert_data();

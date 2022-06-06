@@ -91,6 +91,10 @@ CREATE OR REPLACE PROCEDURE update_private_client(
 AS
 $$
 BEGIN
+    IF NOT EXISTS(SELECT id FROM clients WHERE id = client_id) THEN
+        RAISE EXCEPTION 'Client with id % does not exist', client_id;
+    END IF;
+
     UPDATE private_clients
     SET citizen_card_number = new_citizen_card_number
     WHERE id = client_id;

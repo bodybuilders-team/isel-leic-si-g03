@@ -26,4 +26,6 @@ public class UnprocessedGpsData extends RetrievedGpsData {
                 ", location=" + location +
                 '}';
     }
+
+
 }

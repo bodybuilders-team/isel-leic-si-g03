@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import java.util.Objects;
 import pt.isel.model.Point;
 import pt.isel.model.gps.device.GpsDevice;
 
@@ -29,6 +30,7 @@ public class GpsData {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Integer id;
 
     /**
@@ -151,5 +153,18 @@ public class GpsData {
                 ", timestamp=" + timestamp +
                 ", location='" + location + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GpsData gpsData = (GpsData) o;
+        return Objects.equals(id, gpsData.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

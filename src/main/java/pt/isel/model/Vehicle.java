@@ -2,6 +2,7 @@ package pt.isel.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,11 +11,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.Table;
+import java.util.Objects;
+import org.eclipse.persistence.annotations.NamedStoredFunctionQuery;
 import pt.isel.model.clients.Client;
 import pt.isel.model.gps.device.GpsDevice;
 
-
-import static pt.isel.dal.PersistenceManager.getEntityManager;
 
 /**
  * Vehicle entity.
@@ -28,6 +29,7 @@ public class Vehicle {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Integer id;
 
     /**
@@ -170,15 +172,18 @@ public class Vehicle {
      * @param year the year
      * @return the total number of alarms for a given year and vehicle
      */
-    public int getAlarmsCount(int year) {
-        StoredProcedureQuery query = getEntityManager().createStoredProcedureQuery("get_alarms_count");
+    public int getAlarmsCount(EntityManager em, int year) {
+        StoredProcedureQuery query = em.createStoredProcedureQuery("get_alarms_count");
         query.registerStoredProcedureParameter(1, Integer.class, jakarta.persistence.ParameterMode.IN);
         query.registerStoredProcedureParameter(2, String.class, jakarta.persistence.ParameterMode.IN);
+        query.registerStoredProcedureParameter(3, Integer.class, jakarta.persistence.ParameterMode.OUT);
 
         query.setParameter(1, year);
         query.setParameter(2, licensePlate);
 
-        return (int) query.getSingleResult();
+        query.execute();
+
+        return (int) query.getOutputParameterValue(3);
     }
 
     @Override
@@ -190,5 +195,18 @@ public class Vehicle {
                 ", licensePlate='" + licensePlate + '\'' +
                 ", numAlarms=" + numAlarms +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return Objects.equals(id, vehicle.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

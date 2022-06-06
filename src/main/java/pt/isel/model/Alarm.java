@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import pt.isel.model.gps.data.GpsData;
 
 /**
@@ -20,7 +21,7 @@ public class Alarm {
      */
     @Id
     @OneToOne
-    @JoinColumn(name = "gps_data_id")
+    @JoinColumn(name = "gps_data_id",nullable = false)
     private GpsData gpsData;
 
     /**
@@ -85,5 +86,18 @@ public class Alarm {
                 "gpsData=" + gpsData +
                 ", driverName='" + driverName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Alarm alarm = (Alarm) o;
+        return Objects.equals(gpsData.getId(), alarm.gpsData.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gpsData.getId());
     }
 }

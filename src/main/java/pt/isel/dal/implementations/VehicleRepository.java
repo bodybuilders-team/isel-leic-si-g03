@@ -2,9 +2,8 @@ package pt.isel.dal.implementations;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.Query;
+import jakarta.persistence.ParameterMode;
 import jakarta.persistence.StoredProcedureQuery;
-
 import org.eclipse.persistence.sessions.DatabaseLogin;
 import pt.isel.dal.Mapper;
 import pt.isel.dal.PersistenceManager;
@@ -34,22 +33,34 @@ public class VehicleRepository extends Repository<Vehicle> {
      * @param v  Vehicle to be created
      * @param gz GreenZone to be created
      */
-    public void createVehicle(Vehicle v, GreenZone gz) {
-        PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
-
-            Query query = em
-                    .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+    public boolean createVehicle(Vehicle v, GreenZone gz) {
+        return PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
+            StoredProcedureQuery query = getCreateVehicleStoredProcedure(em);
 
             query.setParameter(1, v.getGpsDevice().getId());
             query.setParameter(2, v.getClient().getId());
             query.setParameter(3, v.getLicensePlate());
-            query.setParameter(4, v.getNumAlarms());
-            query.setParameter(5, gz.getCenterLocation().getX());
-            query.setParameter(6, gz.getCenterLocation().getY());
-            query.setParameter(7, gz.getRadius());
+            query.setParameter(4, gz.getCenterLocation().getX());
+            query.setParameter(5, gz.getCenterLocation().getY());
+            query.setParameter(6, gz.getRadius());
 
             query.executeUpdate();
+
+            return (boolean) query.getOutputParameterValue(7);
         });
+    }
+
+    private StoredProcedureQuery getCreateVehicleStoredProcedure(EntityManager em) {
+        StoredProcedureQuery query = em
+                .createStoredProcedureQuery("create_vehicle");
+        query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(4, Float.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(5, Float.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(6, Double.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(7, Boolean.class, ParameterMode.OUT);
+        return query;
     }
 
     /**
@@ -58,24 +69,21 @@ public class VehicleRepository extends Repository<Vehicle> {
      *
      * @param v Vehicle to be created
      */
-    public void createVehicle(Vehicle v) {
-        PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
-
-            Query query = em
-                    .createNativeQuery("CALL create_vehicle(?::INTEGER,?::INTEGER,?,?::INTEGER,?::POINT,?::DOUBLE)");
+    public boolean createVehicle(Vehicle v) {
+        return PersistenceManager.executeWithIsolationLevel(DatabaseLogin.TRANSACTION_SERIALIZABLE, (em) -> {
+            StoredProcedureQuery query = getCreateVehicleStoredProcedure(em);
 
             query.setParameter(1, v.getGpsDevice().getId());
             query.setParameter(2, v.getClient().getId());
             query.setParameter(3, v.getLicensePlate());
-            query.setParameter(4, v.getNumAlarms());
+            query.setParameter(4, null);
             query.setParameter(5, null);
             query.setParameter(6, null);
-            query.setParameter(7, null);
 
             query.executeUpdate();
+            return (boolean) query.getOutputParameterValue(7);
         });
     }
-
 
     /**
      * Creates a vehicle with the respective associated equipment information,
@@ -86,7 +94,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      * @param v  Vehicle to be created
      * @param gz GreenZone to be created (optional)
      */
-    public void nativeCreateVehicle(Vehicle v, GreenZone gz) {
+    public boolean nativeCreateVehicle(Vehicle v, GreenZone gz) {
         em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
 
         // Get number of client cars
@@ -99,7 +107,10 @@ public class VehicleRepository extends Repository<Vehicle> {
 
             Mapper<GreenZone> greenZoneMapper = new Mapper<>(em) {};
             greenZoneMapper.create(gz);
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -108,7 +119,7 @@ public class VehicleRepository extends Repository<Vehicle> {
      *
      * @param v Vehicle to be created
      */
-    public void nativeCreateVehicle(Vehicle v) {
+    public boolean nativeCreateVehicle(Vehicle v) {
         em.lock(v.getClient(), LockModeType.PESSIMISTIC_READ);
 
         // Get number of client cars
@@ -118,7 +129,10 @@ public class VehicleRepository extends Repository<Vehicle> {
         if (clientCarsCount < Client.maxVehicles || v.getClient() instanceof InstitutionalClient) {
             Mapper<Vehicle> vehicleMapper = new Mapper<>(em) {};
             vehicleMapper.create(v);
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -130,9 +144,12 @@ public class VehicleRepository extends Repository<Vehicle> {
     public int getAlarmsCount(int year) {
         StoredProcedureQuery query = em.createStoredProcedureQuery("get_alarms_count");
         query.registerStoredProcedureParameter(1, Integer.class, jakarta.persistence.ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, Integer.class, jakarta.persistence.ParameterMode.OUT);
 
         query.setParameter(1, year);
 
-        return (int) query.getSingleResult();
+        query.execute();
+
+        return (int) query.getOutputParameterValue(2);
     }
 }

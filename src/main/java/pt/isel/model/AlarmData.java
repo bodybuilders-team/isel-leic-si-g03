@@ -1,12 +1,13 @@
 package pt.isel.model;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 import java.util.Date;
 
 /**
@@ -17,11 +18,19 @@ import java.util.Date;
 @Table(name = "list_alarms")
 public class AlarmData {
 
+    public AlarmData() {}
+
+    public AlarmData(String licensePlate, Point location, Date timestamp) {
+        this.licensePlate = licensePlate;
+        this.location = location;
+        this.timestamp = timestamp;
+    }
+
     /**
      * The gps data associated with the alarm.
      */
     @Id
-    @Column(name = "gps_data_id")
+    @Column(name = "gps_data_id", nullable = false)
     private Integer gpsDataId;
 
     /**
@@ -39,8 +48,11 @@ public class AlarmData {
     /**
      * The location of the data.
      */
-    @Column(nullable = false, columnDefinition = "POINT")
-    private String location;
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "lat", nullable = false)),
+            @AttributeOverride(name = "y", column = @Column(name = "lon", nullable = false))
+    })
+    private Point location;
 
     /**
      * The timestamp of the data.
@@ -82,7 +94,7 @@ public class AlarmData {
      *
      * @return the location of the data.
      */
-    public String getLocation() {
+    public Point getLocation() {
         return location;
     }
 

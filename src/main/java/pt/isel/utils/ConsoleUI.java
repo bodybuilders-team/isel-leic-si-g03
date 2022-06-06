@@ -13,7 +13,7 @@ public class ConsoleUI {
      * @param message message to display
      * @return user input
      */
-    public static Integer requestInteger(String message) {
+    public static int requestInteger(String message) {
         Scanner scanner = new Scanner(System.in);
         System.out.print(message);
         return scanner.nextInt();

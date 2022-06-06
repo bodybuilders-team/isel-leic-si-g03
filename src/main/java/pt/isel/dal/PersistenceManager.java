@@ -4,15 +4,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
-
+import java.util.function.Function;
 import org.eclipse.persistence.internal.jpa.EntityManagerImpl;
 import org.eclipse.persistence.sessions.DatabaseLogin;
-import org.eclipse.persistence.sessions.Session;
 
 /**
  * Represents a persistence manager.
@@ -20,20 +19,32 @@ import org.eclipse.persistence.sessions.Session;
  */
 public class PersistenceManager {
 
-    /**
-     * Entity manager stored in a thread local variable.
-     */
-    private static final ThreadLocal<EntityManager> threadLocalEm = ThreadLocal.withInitial(() -> null);
 
     /**
      * Name of the persistence unit.
      */
     private static final String persistanceUnitName;
 
-    /**
-     * Entity manager factory.
-     */
-    private static EntityManagerFactory emf;
+
+    public static class Session implements Closeable {
+        private final EntityManagerFactory emf;
+        private final EntityManager em;
+
+        public Session() {
+            this.emf = Persistence.createEntityManagerFactory(persistanceUnitName);
+            this.em = emf.createEntityManager();
+        }
+
+        @Override
+        public void close() {
+            getEm().close();
+            emf.close();
+        }
+
+        public EntityManager getEm() {
+            return em;
+        }
+    }
 
     static {
         Properties props = new Properties();
@@ -48,115 +59,95 @@ public class PersistenceManager {
         }
     }
 
+
     /**
-     * Gets the entity manager factory.
-     * If the entity manager factory is not set, it creates a new one.
+     * Executes a transaction, given a function.
      *
-     * @return the entity manager factory
+     * @param fun the runnable to be executed
      */
-    public static EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null)
-            emf = Persistence.createEntityManagerFactory(persistanceUnitName);
+    public static <T> T execute(Function<EntityManager, T> fun) {
+        Session session = new Session();
 
-        return emf;
+        return execute(session, fun);
     }
 
     /**
-     * Gets the entity manager.
-     * If the entity manager is not set, it creates a new one.
-     *
-     * @return the entity manager
-     */
-    public static EntityManager getEntityManager() {
-        if (threadLocalEm.get() == null) {
-            EntityManager em = getEntityManagerFactory().createEntityManager();
-            threadLocalEm.set(em);
-        }
-
-        return threadLocalEm.get();
-    }
-
-    /**
-     * Close the entity manager factory.
-     * If the entity manager factory is not set, it does nothing.
-     */
-    public static void closeEntityManagerFactory() {
-        if (emf == null)
-            return;
-
-        emf.close();
-        emf = null;
-    }
-
-    /**
-     * Close the entity manager.
-     * If the entity manager is not set, it does nothing.
-     */
-    public static void closeEntityManager() {
-        if (threadLocalEm.get() == null)
-            return;
-
-        threadLocalEm.get().close();
-        threadLocalEm.set(null);
-    }
-
-    /**
-     * Executes a transaction, given a runnable.
+     * Executes a transaction, given a consumer.
      *
      * @param consumer the runnable to be executed
      */
     public static void execute(Consumer<EntityManager> consumer) {
-        EntityManager em = getEntityManager();
-
-        // Create entity manager factory per thread
-        EntityTransaction tx = em.getTransaction();
-
-        try {
-            tx.begin();
-
+        Session session = new Session();
+        Function<EntityManager, Void> f = em -> {
             consumer.accept(em);
+            return null;
+        };
 
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive())
-                tx.rollback();
-
-            throw e;
-        } finally {
-            PersistenceManager.closeEntityManager();
-            PersistenceManager.closeEntityManagerFactory();
-        }
+        execute(session, f);
     }
 
     /**
      * Executes a transaction, given a runnable and an isolation level.
      *
      * @param transactionIsolationLevel the isolation level of the transaction
-     * @param consumer                  the runnable to be executed
+     * @param fun                       the runnable to be executed
      */
-    public static void executeWithIsolationLevel(int transactionIsolationLevel, Consumer<EntityManager> consumer) {
-        EntityManager em = getEntityManager();
+    public static <T> T executeWithIsolationLevel(int transactionIsolationLevel, Function<EntityManager, T> fun) {
+        Session session = new Session();
 
-        Session session = ((EntityManagerImpl) em).getSession();
-        DatabaseLogin databaseLogin = (DatabaseLogin) session.getDatasourceLogin();
-
-        int prevIsolation = databaseLogin.getTransactionIsolation();
+        DatabaseLogin databaseLogin = getDatabaseLogin(session.getEm());
         databaseLogin.setTransactionIsolation(transactionIsolationLevel);
 
+        return execute(session, fun);
+    }
+
+    /**
+     * Executes a transaction, given a runnable and an isolation level.
+     *
+     * @param transactionIsolationLevel the isolation level of the transaction
+     * @param fun                       the runnable to be executed
+     */
+    public static void executeWithIsolationLevel(int transactionIsolationLevel, Consumer<EntityManager> fun) {
+        Session session = new Session();
+
+        DatabaseLogin databaseLogin = getDatabaseLogin(session.getEm());
+        databaseLogin.setTransactionIsolation(transactionIsolationLevel);
+
+        Function<EntityManager, Void> f = em -> {
+            fun.accept(em);
+            return null;
+        };
+
+        execute(session, f);
+    }
+
+
+    @SuppressWarnings("TryFinallyCanBeTryWithResources")
+    private static <T> T execute(Session session, Function<EntityManager, T> fun) {
+        EntityManager em = session.getEm();
         EntityTransaction tx = em.getTransaction();
 
         try {
             tx.begin();
-            consumer.accept(em);
+
+            T value = fun.apply(em);
+
             tx.commit();
+
+            return value;
         } catch (Exception e) {
             if (tx.isActive())
                 tx.rollback();
 
             throw e;
+        } finally {
+            session.close();
         }
+    }
 
-        databaseLogin.setTransactionIsolation(prevIsolation);
+    private static DatabaseLogin getDatabaseLogin(EntityManager em) {
+        org.eclipse.persistence.sessions.Session session = ((EntityManagerImpl) em).getSession();
+        return (DatabaseLogin) (session).getDatasourceLogin();
     }
 
 }

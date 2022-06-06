@@ -47,8 +47,8 @@ $$
 
         CALL remove_private_client(1);
 
-        SELECT * FROM private_clients WHERE id = 1 INTO client;
-        IF (client IS NULL) THEN
+        SELECT * FROM clients WHERE id = 1 INTO client;
+        IF (client.active is False) THEN
             RAISE NOTICE '2d) Test 2: Remove private client - Scenario 1: OK';
         ELSE
             RAISE EXCEPTION '2d) Test 2: Remove private client - Scenario 1: NOK';
@@ -245,7 +245,7 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        IF NOT (location_inside_green_zone(point(10, 10), 5, point(20, 20))) THEN
+        IF NOT (location_inside_green_zone(point(10, 10), point(11, 11), 150)) THEN
             RAISE NOTICE '2g) Test 1: Location is not inside green zone - Scenario 1: OK';
         ELSE
             RAISE EXCEPTION '2g) Test 1: Location is not inside green zone - Scenario 1: NOK';
@@ -262,7 +262,7 @@ $$
     BEGIN
         CALL clear_and_insert_data();
 
-        IF (location_inside_green_zone(point(10, 10), 20, point(20, 20))) THEN
+        IF (location_inside_green_zone(point(10, 10), point(20, 20), 1600)) THEN
             RAISE NOTICE '2g) Test 2: Location is inside green zone - Scenario 1: OK';
         ELSE
             RAISE EXCEPTION '2g) Test 2: Location is inside green zone - Scenario 1: NOK';
@@ -279,16 +279,16 @@ DO
 $$
     DECLARE
         alarm RECORD;
+        v_gps_data_id INTEGER;
     BEGIN
         CALL clear_and_insert_data();
 
         INSERT INTO gps_data(device_id, timestamp, lat, lon)
-        VALUES (1, '2022-04-12 14:05:06 UTC+1', 38, -9);
+        VALUES (1, '2022-04-12 14:05:06 UTC+1', 38, 9) RETURNING id INTO v_gps_data_id;
 
         SELECT *
         FROM alarms
-                 JOIN gps_data on alarms.gps_data_id = gps_data.id
-        WHERE timestamp = '2022-04-12 14:05:06 UTC+1'
+                 WHERE gps_data_id = v_gps_data_id
         INTO alarm;
 
         IF (alarm IS NULL) THEN
@@ -344,7 +344,7 @@ $$
 
         INSERT INTO gps_devices(device_status) VALUES (1);
 
-        CALL create_vehicle(4, 1, '11-HH-22', 0);
+        PERFORM create_vehicle(4, 1, '11-HH-22', 0);
 
         SELECT *
         FROM vehicles
@@ -374,7 +374,7 @@ $$
         INSERT INTO gps_devices(device_status) VALUES (1), (1);
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (4, 1, '11-HH-22', 0);
 
-        CALL create_vehicle(5, 1, '18-H1-77', 0);
+        PERFORM create_vehicle(5, 1, '18-H1-77', 0);
 
         SELECT *
         FROM vehicles
@@ -405,7 +405,7 @@ $$
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (4, 2, '11-HH-22', 0);
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (5, 2, '19-T2-08', 0);
 
-        CALL create_vehicle(6, 2, '18-H1-77', 0);
+        PERFORM create_vehicle(6, 2, '18-H1-77', 0);
 
         SELECT *
         FROM vehicles
@@ -436,12 +436,12 @@ $$
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (4, 2, '11-HH-22', 0);
         INSERT INTO vehicles(gps_device_id, client_id, license_plate, num_alarms) VALUES (5, 2, '19-T2-08', 0);
 
-        CALL create_vehicle(6, 2, '18-H1-77', 0, point(10, 512), 5);
+        PERFORM create_vehicle(6, 2, '18-H1-77', 0, 10.0, 512.0, 5.0);
 
         SELECT *
         FROM green_zones
-        WHERE lat == 10
-          AND lon = 512
+        WHERE lat = 10.0
+          AND lon = 512.0
         INTO green_zone;
 
         IF (green_zone IS NOT NULL) THEN
